@@ -37,7 +37,7 @@ public class PreferenceManager {
     }
 
     public boolean isLoggedIn() {
-        return pref.getBoolean(KEY_IS_LOGGED_IN, true);
+        return pref.getBoolean(KEY_IS_LOGGED_IN, false);
     }
 
     public void clear() {

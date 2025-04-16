@@ -10,9 +10,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import com.example.clubdetenis.DTO.DTOLogin;
 import com.example.clubdetenis.MainActivity;
 import com.example.clubdetenis.R;
@@ -21,20 +18,23 @@ import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Usuario;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginActivity extends AppCompatActivity {
+
     private EditText etEmail, etPassword;
     private Button btnLogin;
-   private com.example.clubdetenis.Utils.PreferenceManager preferenceManager;
+    private PreferenceManager preferenceManager;
 
-
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         preferenceManager = new PreferenceManager(this);
-        if(preferenceManager.isLoggedIn()) {
+        if (preferenceManager.isLoggedIn()) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
@@ -51,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            Log.d("No funciona", toString());
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -60,14 +59,14 @@ public class LoginActivity extends AppCompatActivity {
         DTOLogin loginRequest = new DTOLogin(email, password);
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<Usuario> call = apiService.login(loginRequest); // <- Cambia aquí
+        Call<Usuario> call = apiService.login(loginRequest);
 
         call.enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Usuario loggedUser = response.body();
-                    preferenceManager.saveUser (loggedUser);
+                    preferenceManager.saveUser(loggedUser);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 } else {
@@ -77,10 +76,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Usuario> call, Throwable t) {
+                Log.e("No va ", t.getMessage());
+                Log.d("No va", Log.getStackTraceString(t));
                 Toast.makeText(LoginActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
     }
-
-    }
+}
