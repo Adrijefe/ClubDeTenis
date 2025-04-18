@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.clubdetenis.Utils.PreferenceManager;
 import com.example.clubdetenis.activities.LoginActivity;
+import com.example.clubdetenis.activities.PistasActivity;
 
 public class MainActivity extends AppCompatActivity {
     private Button btnPistas, btnReservas, btnLogout;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         btnReservas = findViewById(R.id.btnReservas);
         btnLogout = findViewById(R.id.btnLogout);
 
-       // btnPistas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, PistasActivity.class)));
+        btnPistas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, PistasActivity.class)));
         //btnReservas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ReservasActivity.class)));
         btnLogout.setOnClickListener(v -> {
             preferenceManager.clear();

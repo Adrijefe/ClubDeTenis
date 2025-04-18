@@ -35,5 +35,12 @@
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ClubDeTenis" />
+
+        <!-- NUEVA: PistasActivity -->
+        <activity
+            android:name=".activities.PistasActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClubDeTenis" />
     </application>
+
 </manifest>

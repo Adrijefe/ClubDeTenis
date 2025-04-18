@@ -1,6 +1,6 @@
 package com.example.clubdetenis.api;
 import com.example.clubdetenis.DTO.DTOLogin;
-import com.example.clubdetenis.models.Pista;
+import com.example.clubdetenis.PistaResponse;
 import com.example.clubdetenis.models.Reserva;
 import com.example.clubdetenis.models.Usuario;
 
@@ -15,8 +15,8 @@ public interface ApiService {
     @POST("login.php")
     Call<Usuario> login(@Body DTOLogin loginRequest);
 
-    @GET("pistas.php")
-    Call<List<Pista>> getPistas();
+    @GET("pista.php")
+    Call<PistaResponse> getPistas();
 
     @GET("reservas.php")
     Call<List<Reserva>> getReservas(@Query("usuario_id") int usuarioId);

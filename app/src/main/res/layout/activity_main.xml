@@ -3,26 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
 
+    <!-- Imagen en la parte superior (centrada) -->
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="200dp"
+    android:layout_height="200dp"
+    android:layout_marginBottom="32dp"
+    android:src="@drawable/imagen"
+    android:contentDescription="Logo"
+    android:layout_gravity="center"/>
+
+    <!-- Botón de Ver Pistas -->
     <Button
         android:id="@+id/btnPistas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ver Pistas"/>
+        android:text="Ver Pistas"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"
+        android:cornerRadius="8dp"/>
 
+    <!-- Botón de Mis Reservas -->
     <Button
         android:id="@+id/btnReservas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Mis Reservas"
+        android:textColor="@android:color/white"
         android:layout_marginTop="16dp"
-        android:text="Mis Reservas"/>
+        android:textSize="16sp"
+        android:cornerRadius="8dp"/>
 
+    <!-- Botón de Cerrar Sesión -->
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Cerrar Sesión"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:textColor="@android:color/white"
         android:layout_marginTop="16dp"
-        android:text="Cerrar Sesión"/>
+        android:textSize="16sp"
+        android:cornerRadius="8dp"/>
 
 </LinearLayout>
