@@ -22,6 +22,9 @@ public class PreferenceManager {
         editor = pref.edit();
     }
 
+    public PreferenceManager(PreferenceManager preferenceManager) {
+    }
+
     public void saveUser(Usuario user) {
         Gson gson = new Gson();
         String userJson = gson.toJson(user);
@@ -39,6 +42,12 @@ public class PreferenceManager {
     public boolean isLoggedIn() {
         return pref.getBoolean(KEY_IS_LOGGED_IN, false);
     }
+    public void onLoginSuccess(Usuario usuario) {
+        // Guardamos el usuario y su id en las preferencias
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.saveUser(usuario);  // Guardamos el usuario completo, incluyendo el id
+    }
+
 
     public void clear() {
         editor.clear();

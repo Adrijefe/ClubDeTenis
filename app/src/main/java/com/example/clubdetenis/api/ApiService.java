@@ -2,7 +2,9 @@ package com.example.clubdetenis.api;
 import com.example.clubdetenis.DTO.DTOLogin;
 import com.example.clubdetenis.PistaResponse;
 import com.example.clubdetenis.models.Reserva;
+import com.example.clubdetenis.models.ReservaRequest;
 import com.example.clubdetenis.models.Usuario;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -18,11 +20,17 @@ public interface ApiService {
     @GET("pista.php")
     Call<PistaResponse> getPistas();
 
-    @GET("reservas.php")
-    Call<List<Reserva>> getReservas(@Query("usuario_id") int usuarioId);
-
+    // Para crear reservas
     @POST("reservas.php")
-    Call<Void> createReserva(@Body Reserva reserva);
+    Call<JsonObject> crearReserva(@Body ReservaRequest reservaRequest);
+
+    // Para obtener reservas (ya lo tienes)
+    @GET("reservas.php")
+    Call<JsonObject> getReservas(@Query("usuario_id") int usuarioId);
+
+    // Para obtener pistas disponibles
+    @GET("pista.php")
+    Call<JsonObject> getPistasDisponibles();
 
 
 }

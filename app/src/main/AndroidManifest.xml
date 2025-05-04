@@ -41,6 +41,15 @@
             android:name=".activities.PistasActivity"
             android:exported="true"
             android:theme="@style/Theme.ClubDeTenis" />
+
+        <activity
+            android:name=".activities.ReservasActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClubDeTenis" />
+        <activity
+            android:name=".activities.CrearReservaActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClubDeTenis" />
     </application>
 
 </manifest>

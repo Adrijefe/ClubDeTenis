@@ -5,24 +5,58 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnPistas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ver Pistas"/>
-
-    <Button
-        android:id="@+id/btnReservas"
-        android:layout_width="match_parent"
+    <!-- Imagen centrada en la pantalla -->
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Mis Reservas"/>
+        android:layout_gravity="center"
+        android:src="@drawable/imagen" />
 
-    <Button
-        android:id="@+id/btnLogout"
+
+    <!-- Espacio para los botones en dos columnas -->
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Cerrar Sesión"/>
+        android:columnCount="2"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:rowCount="2"
+        android:layout_marginBottom="16dp">
+
+        <!-- Botón para ver pistas -->
+        <Button
+            android:id="@+id/btnPistas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Ver Pistas" />
+
+        <!-- Botón para ver reservas -->
+        <Button
+            android:id="@+id/btnReservas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Mis Reservas" />
+
+        <!-- Botón para hacer una reserva -->
+        <Button
+            android:id="@+id/btnNuevaReserva"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Hacer una Reserva" />
+
+        <!-- Botón para cerrar sesión -->
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Cerrar Sesión" />
+
+    </GridLayout>
+
 
 </LinearLayout>
