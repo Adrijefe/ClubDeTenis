@@ -1,37 +1,46 @@
 package com.example.clubdetenis.models;
 
-public class ReservaRequest {
-    private int usuario_id;
-    private int pista_id;
-    private String fecha;
-    private String hora_inicio;
-    private String hora_fin;
+import com.google.gson.annotations.SerializedName;
 
-    public ReservaRequest(int usuario_id, int pista_id, String fecha, String hora_inicio, String hora_fin) {
-        this.usuario_id = usuario_id;
-        this.pista_id = pista_id;
+public class ReservaRequest {
+
+    @SerializedName("usuario_id")
+    private int usuarioId;
+
+    @SerializedName("pista_id")
+    private int pistaId;
+
+    private String fecha;
+
+    @SerializedName("hora_inicio")
+    private String horaInicio;
+
+    @SerializedName("hora_fin")
+    private String horaFin;
+
+    public ReservaRequest(int usuarioId, int pistaId, String fecha, String horaInicio, String horaFin) {
+        this.usuarioId = usuarioId;
+        this.pistaId = pistaId;
         this.fecha = fecha;
-        this.hora_inicio = hora_inicio;
-        this.hora_fin = hora_fin;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
     }
 
     // Getters y setters
-
-
-    public int getUsuario_id() {
-        return usuario_id;
+    public int getUsuarioId() {
+        return usuarioId;
     }
 
-    public void setUsuario_id(int usuario_id) {
-        this.usuario_id = usuario_id;
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
-    public int getPista_id() {
-        return pista_id;
+    public int getPistaId() {
+        return pistaId;
     }
 
-    public void setPista_id(int pista_id) {
-        this.pista_id = pista_id;
+    public void setPistaId(int pistaId) {
+        this.pistaId = pistaId;
     }
 
     public String getFecha() {
@@ -42,19 +51,19 @@ public class ReservaRequest {
         this.fecha = fecha;
     }
 
-    public String getHora_inicio() {
-        return hora_inicio;
+    public String getHoraInicio() {
+        return horaInicio;
     }
 
-    public void setHora_inicio(String hora_inicio) {
-        this.hora_inicio = hora_inicio;
+    public void setHoraInicio(String horaInicio) {
+        this.horaInicio = horaInicio;
     }
 
-    public String getHora_fin() {
-        return hora_fin;
+    public String getHoraFin() {
+        return horaFin;
     }
 
-    public void setHora_fin(String hora_fin) {
-        this.hora_fin = hora_fin;
+    public void setHoraFin(String horaFin) {
+        this.horaFin = horaFin;
     }
 }

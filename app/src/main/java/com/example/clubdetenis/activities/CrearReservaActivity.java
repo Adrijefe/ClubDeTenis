@@ -134,6 +134,12 @@ public class CrearReservaActivity extends AppCompatActivity {
         Log.d("CrearReserva", "Hora Inicio: " + horaInicioStr);
         Log.d("CrearReserva", "Hora Fin: " + horaFinStr);
 
+        // Validación para asegurarse de que todos los datos son válidos antes de enviarlos
+        if (fecha.isEmpty() || horaInicioStr.isEmpty() || horaFinStr.isEmpty()) {
+            Toast.makeText(CrearReservaActivity.this, "Faltan datos en la reserva", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ReservaRequest reservaRequest = new ReservaRequest(
                 usuarioId,
                 pistaSeleccionada.getId(),
@@ -170,5 +176,4 @@ public class CrearReservaActivity extends AppCompatActivity {
             }
         });
     }
-
 }
