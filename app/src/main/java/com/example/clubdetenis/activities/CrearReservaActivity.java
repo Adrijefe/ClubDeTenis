@@ -3,11 +3,12 @@ package com.example.clubdetenis.activities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,9 +35,10 @@ import retrofit2.Response;
 public class CrearReservaActivity extends AppCompatActivity {
     private Spinner spinnerPistas;
     private DatePicker datePicker;
-    private TimePicker timePicker;
+    private Spinner spinnerHoras;
     private Button btnReservar;
     private List<Pista> pistas = new ArrayList<>();
+    private List<String> horasDisponibles = new ArrayList<>();
     private PreferenceManager preferenceManager;
 
     @SuppressLint("MissingInflatedId")
@@ -48,16 +50,30 @@ public class CrearReservaActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(this);
         int usuarioId = preferenceManager.getUser().getId();
 
-        // Inicializar vistas
         spinnerPistas = findViewById(R.id.spinnerPistas);
         datePicker = findViewById(R.id.datePicker);
-        timePicker = findViewById(R.id.timePicker);
+        spinnerHoras = findViewById(R.id.spinnerHoras);
         btnReservar = findViewById(R.id.btnReservar);
-        timePicker.setIs24HourView(true);
 
-        // Cargar pistas disponibles
+        // Cargar las pistas disponibles
         cargarPistas();
 
+        // Establecer un listener para que actualice las horas disponibles cada vez que cambie la fecha
+        datePicker.init(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(),
+                (view, year, monthOfYear, dayOfMonth) -> cargarHorasDisponibles());
+
+        // Establecer listener para cuando cambie la pista seleccionada
+        spinnerPistas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                cargarHorasDisponibles();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {}
+        });
+
+        // Accionar la reserva cuando el botón es presionado
         btnReservar.setOnClickListener(v -> crearReserva(usuarioId));
     }
 
@@ -69,15 +85,12 @@ public class CrearReservaActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         JsonObject json = response.body();
-                        // Cambiar "pista" a "pistas" para que coincida con el JSON
                         JsonArray pistasJson = json.getAsJsonArray("pistas");
 
-                        // Convertir el JSON en una lista de objetos Pista
                         Gson gson = new Gson();
                         Type listType = new TypeToken<List<Pista>>(){}.getType();
                         pistas = gson.fromJson(pistasJson, listType);
 
-                        // Crear un ArrayAdapter y asociarlo al Spinner
                         ArrayAdapter<Pista> adapter = new ArrayAdapter<>(
                                 CrearReservaActivity.this,
                                 android.R.layout.simple_spinner_item,
@@ -101,11 +114,63 @@ public class CrearReservaActivity extends AppCompatActivity {
         });
     }
 
+    private void cargarHorasDisponibles() {
+        String fecha = String.format("%04d-%02d-%02d",
+                datePicker.getYear(),
+                datePicker.getMonth() + 1,
+                datePicker.getDayOfMonth());
+
+        Pista pistaSeleccionada = (Pista) spinnerPistas.getSelectedItem();
+        if (fecha.isEmpty() || pistaSeleccionada == null) {
+            return;
+        }
+
+        int pistaId = pistaSeleccionada.getId();
+
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        apiService.getHorasDisponibles(fecha, pistaId).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        JsonObject json = response.body();
+                        JsonArray horasJson = json.getAsJsonArray("horas");
+
+                        horasDisponibles.clear();
+                        for (int i = 0; i < horasJson.size(); i++) {
+                            horasDisponibles.add(horasJson.get(i).getAsString());
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                CrearReservaActivity.this,
+                                android.R.layout.simple_spinner_item,
+                                horasDisponibles
+                        );
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerHoras.setAdapter(adapter);
+
+                    } catch (Exception e) {
+                        Log.e("CrearReserva", "Error parsing horas", e);
+                        Toast.makeText(CrearReservaActivity.this, "Error al cargar las horas disponibles", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(CrearReservaActivity.this, "No se pudieron cargar las horas", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(CrearReservaActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void crearReserva(int usuarioId) {
         Pista pistaSeleccionada = (Pista) spinnerPistas.getSelectedItem();
+        String horaSeleccionada = (String) spinnerHoras.getSelectedItem();
 
-        if (pistaSeleccionada == null) {
-            Toast.makeText(CrearReservaActivity.this, "Debes seleccionar una pista", Toast.LENGTH_SHORT).show();
+        if (pistaSeleccionada == null || horaSeleccionada == null) {
+            Toast.makeText(CrearReservaActivity.this, "Debe seleccionar una pista y una hora", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -114,38 +179,12 @@ public class CrearReservaActivity extends AppCompatActivity {
                 datePicker.getMonth() + 1,
                 datePicker.getDayOfMonth());
 
-        // Obtener la hora de inicio del TimePicker
-        int horaInicio = timePicker.getHour();
-        int minutoInicio = timePicker.getMinute();
-
-        // Calcular la hora final (sumamos una hora al valor de horaInicio)
-        int horaFin = (horaInicio + 1) % 24;  // % 24 para no superar las 24 horas
-        int minutoFin = minutoInicio;         // Los minutos permanecen iguales
-
-        // Formatear las horas en formato "HH:mm:ss"
-        String horaInicioStr = String.format("%02d:%02d:00", horaInicio, minutoInicio);
-        String horaFinStr = String.format("%02d:%02d:00", horaFin, minutoFin);
-
-        // Log para verificar los datos que se están enviando
-        Log.d("CrearReserva", "Datos de reserva: ");
-        Log.d("CrearReserva", "Usuario ID: " + usuarioId);
-        Log.d("CrearReserva", "Pista ID: " + pistaSeleccionada.getId());
-        Log.d("CrearReserva", "Fecha: " + fecha);
-        Log.d("CrearReserva", "Hora Inicio: " + horaInicioStr);
-        Log.d("CrearReserva", "Hora Fin: " + horaFinStr);
-
-        // Validación para asegurarse de que todos los datos son válidos antes de enviarlos
-        if (fecha.isEmpty() || horaInicioStr.isEmpty() || horaFinStr.isEmpty()) {
-            Toast.makeText(CrearReservaActivity.this, "Faltan datos en la reserva", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         ReservaRequest reservaRequest = new ReservaRequest(
                 usuarioId,
                 pistaSeleccionada.getId(),
                 fecha,
-                horaInicioStr,
-                horaFinStr
+                horaSeleccionada,
+                incrementarHora(horaSeleccionada)
         );
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
@@ -158,15 +197,8 @@ public class CrearReservaActivity extends AppCompatActivity {
                         Toast.makeText(CrearReservaActivity.this, "Reserva creada con éxito", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        // Manejar el caso cuando la API devuelve un mensaje de error
-                        if (json.has("message")) {
-                            Toast.makeText(CrearReservaActivity.this, json.get("message").getAsString(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(CrearReservaActivity.this, "Error desconocido al crear la reserva", Toast.LENGTH_SHORT).show();
-                        }
+                        Toast.makeText(CrearReservaActivity.this, "Error al crear la reserva", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(CrearReservaActivity.this, "Error al crear la reserva", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -175,5 +207,13 @@ public class CrearReservaActivity extends AppCompatActivity {
                 Toast.makeText(CrearReservaActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private String incrementarHora(String hora) {
+        String[] parts = hora.split(":");
+        int horaInicio = Integer.parseInt(parts[0]);
+        int minutoInicio = Integer.parseInt(parts[1]);
+        int horaFin = (horaInicio + 1) % 24;
+        return String.format("%02d:%02d:00", horaFin, minutoInicio);
     }
 }

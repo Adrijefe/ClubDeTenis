@@ -86,6 +86,6 @@ public class Pista {
     // Método toString() para que el Spinner muestre el nombre
     @Override
     public String toString() {
-        return nombre + estado;  // El spinner solo mostrará el nombre de la pista
+        return nombre;  // El spinner solo mostrará el nombre de la pista
     }
 }
