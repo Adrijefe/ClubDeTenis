@@ -1,5 +1,7 @@
 package com.example.clubdetenis.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Pista {
     private int id;
     private String nombre;
@@ -7,6 +9,11 @@ public class Pista {
     private String descripcion;
     private String precioHora;
     private String imagen;
+    @SerializedName("estado")
+    private String estado;
+
+
+
 
     public Pista() {
     }
@@ -69,9 +76,16 @@ public class Pista {
         this.imagen = imagen;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
     // Método toString() para que el Spinner muestre el nombre
     @Override
     public String toString() {
-        return nombre;  // El spinner solo mostrará el nombre de la pista
+        return nombre + estado;  // El spinner solo mostrará el nombre de la pista
     }
 }

@@ -4,26 +4,32 @@ import com.google.gson.annotations.SerializedName;
 
 public class ReservaRequest {
 
-    @SerializedName("usuario_id")
+    @SerializedName("usuarioId")
     private int usuarioId;
 
-    @SerializedName("pista_id")
+    @SerializedName("pistaId")
     private int pistaId;
 
-    private String fecha;
-
-    @SerializedName("hora_inicio")
+    @SerializedName("horaInicio")
     private String horaInicio;
 
-    @SerializedName("hora_fin")
+    @SerializedName("horaFin")
     private String horaFin;
 
+    @SerializedName("estado")  // Agregar el mapeo para el campo "estado"
+    private String estado;
+
+    @SerializedName("fecha")  // Mapear el campo "fecha" para el JSON
+    private String fecha_reserva;
+
+    // Constructor con los parámetros adecuados
     public ReservaRequest(int usuarioId, int pistaId, String fecha, String horaInicio, String horaFin) {
         this.usuarioId = usuarioId;
         this.pistaId = pistaId;
-        this.fecha = fecha;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
+        this.estado = "confirmado";  // Se puede mantener como un valor predeterminado
+        this.fecha_reserva = fecha; // Asignar la fecha del parámetro al campo
     }
 
     // Getters y setters
@@ -43,14 +49,6 @@ public class ReservaRequest {
         this.pistaId = pistaId;
     }
 
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
-
     public String getHoraInicio() {
         return horaInicio;
     }
@@ -65,5 +63,21 @@ public class ReservaRequest {
 
     public void setHoraFin(String horaFin) {
         this.horaFin = horaFin;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getFecha_reserva() {
+        return fecha_reserva;
+    }
+
+    public void setFecha_reserva(String fecha_reserva) {
+        this.fecha_reserva = fecha_reserva;
     }
 }
