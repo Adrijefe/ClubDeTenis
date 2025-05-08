@@ -19,6 +19,7 @@ import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Pista;
 import com.example.clubdetenis.models.ReservaRequest;
+import com.example.clubdetenis.models.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -40,6 +41,7 @@ public class CrearReservaActivity extends AppCompatActivity {
     private List<Pista> pistas = new ArrayList<>();
     private List<String> horasDisponibles = new ArrayList<>();
     private PreferenceManager preferenceManager;
+    private int usuarioId;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -48,21 +50,28 @@ public class CrearReservaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crear_reserva);
 
         preferenceManager = new PreferenceManager(this);
-        int usuarioId = preferenceManager.getUser().getId();
+        Usuario usuario = preferenceManager.getUser();
+        if (usuario != null) {
+            usuarioId = usuario.getId();
+        } else {
+            Toast.makeText(this, "Error: usuario no logueado", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         spinnerPistas = findViewById(R.id.spinnerPistas);
         datePicker = findViewById(R.id.datePicker);
         spinnerHoras = findViewById(R.id.spinnerHoras);
         btnReservar = findViewById(R.id.btnReservar);
 
-        // Cargar las pistas disponibles
+        // Establecer la fecha mínima permitida en el DatePicker (no se pueden seleccionar fechas pasadas)
+        datePicker.setMinDate(System.currentTimeMillis());
+
         cargarPistas();
 
-        // Establecer un listener para que actualice las horas disponibles cada vez que cambie la fecha
         datePicker.init(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(),
                 (view, year, monthOfYear, dayOfMonth) -> cargarHorasDisponibles());
 
-        // Establecer listener para cuando cambie la pista seleccionada
         spinnerPistas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -73,7 +82,6 @@ public class CrearReservaActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {}
         });
 
-        // Accionar la reserva cuando el botón es presionado
         btnReservar.setOnClickListener(v -> crearReserva(usuarioId));
     }
 

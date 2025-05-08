@@ -1,7 +1,5 @@
 package com.example.clubdetenis.Adapter;
 
-
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 import com.example.clubdetenis.R;
 import com.example.clubdetenis.models.Reserva;
@@ -40,6 +37,9 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         holder.tvFecha.setText(reserva.getFecha());
         holder.tvHora.setText(String.format("%s - %s", reserva.getHoraInicio(), reserva.getHoraFin()));
         holder.tvEstado.setText(reserva.getEstado());
+
+        // Ahora, añadir el nombre del usuario
+        holder.tvUsuarioNombre.setText(reserva.getUsuarioNombre());
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
     }
 
     public static class ReservaViewHolder extends RecyclerView.ViewHolder {
-        TextView tvPista, tvFecha, tvHora, tvEstado;
+        TextView tvPista, tvFecha, tvHora, tvEstado, tvUsuarioNombre;
 
         public ReservaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -56,6 +56,7 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
             tvFecha = itemView.findViewById(R.id.tvFecha);
             tvHora = itemView.findViewById(R.id.tvHora);
             tvEstado = itemView.findViewById(R.id.tvEstado);
+            tvUsuarioNombre = itemView.findViewById(R.id.tvUsuarioNombre);  // Añadido el TextView para el nombre del usuario
         }
     }
 }

@@ -3,7 +3,6 @@ package com.example.clubdetenis.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-
 import com.example.clubdetenis.models.Usuario;
 import com.google.gson.Gson;
 
@@ -14,15 +13,10 @@ public class PreferenceManager {
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private Context context;
 
     public PreferenceManager(Context context) {
-        this.context = context;
         pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
-    }
-
-    public PreferenceManager(PreferenceManager preferenceManager) {
     }
 
     public void saveUser(Usuario user) {
@@ -42,12 +36,12 @@ public class PreferenceManager {
     public boolean isLoggedIn() {
         return pref.getBoolean(KEY_IS_LOGGED_IN, false);
     }
-    public void onLoginSuccess(Usuario usuario) {
-        // Guardamos el usuario y su id en las preferencias
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        preferenceManager.saveUser(usuario);  // Guardamos el usuario completo, incluyendo el id
-    }
 
+    public void onLoginSuccess(Context context, Usuario usuario) {
+        // Guardamos el usuario y su id en las preferencias correctamente
+        PreferenceManager preferenceManager = new PreferenceManager(context);
+        preferenceManager.saveUser(usuario);
+    }
 
     public void clear() {
         editor.clear();

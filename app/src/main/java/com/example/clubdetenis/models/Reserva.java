@@ -4,21 +4,32 @@ import com.google.gson.annotations.SerializedName;
 
 public class Reserva {
     private int id;
+
     @SerializedName("usuario_id")
     private int usuarioId;
+
+    @SerializedName("usuario_nombre")  // Campo para almacenar el nombre del usuario
+    private String usuarioNombre;
+
     private int pistaId;
     private String fecha;
+
     @SerializedName("hora_inicio")
     private String horaInicio;
+
     @SerializedName("hora_fin")
     private String horaFin;
+
     private String estado;
+
     @SerializedName("pista_nombre")
     private String pistaNombre;
 
-    public Reserva(int id, int usuarioId, int pistaId, String fecha, String horaInicio, String horaFin, String estado, String pistaNombre) {
+    // Constructor con el campo usuarioNombre
+    public Reserva(int id, int usuarioId, String usuarioNombre, int pistaId, String fecha, String horaInicio, String horaFin, String estado, String pistaNombre) {
         this.id = id;
         this.usuarioId = usuarioId;
+        this.usuarioNombre = usuarioNombre;
         this.pistaId = pistaId;
         this.fecha = fecha;
         this.horaInicio = horaInicio;
@@ -28,12 +39,75 @@ public class Reserva {
     }
 
     // Getters y Setters
-    public int getId() { return id; }
-    public int getUsuarioId() { return usuarioId; }
-    public int getPistaId() { return pistaId; }
-    public String getFecha() { return fecha; }
-    public String getHoraInicio() { return horaInicio; }
-    public String getHoraFin() { return horaFin; }
-    public String getEstado() { return estado; }
-    public String getPistaNombre() { return pistaNombre; }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public String getUsuarioNombre() {
+        return usuarioNombre;
+    }
+
+    public void setUsuarioNombre(String usuarioNombre) {
+        this.usuarioNombre = usuarioNombre;
+    }
+
+    public int getPistaId() {
+        return pistaId;
+    }
+
+    public void setPistaId(int pistaId) {
+        this.pistaId = pistaId;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(String horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public String getHoraFin() {
+        return horaFin;
+    }
+
+    public void setHoraFin(String horaFin) {
+        this.horaFin = horaFin;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getPistaNombre() {
+        return pistaNombre;
+    }
+
+    public void setPistaNombre(String pistaNombre) {
+        this.pistaNombre = pistaNombre;
+    }
 }
