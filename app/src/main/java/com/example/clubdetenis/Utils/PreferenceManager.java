@@ -37,11 +37,6 @@ public class PreferenceManager {
         return pref.getBoolean(KEY_IS_LOGGED_IN, false);
     }
 
-    public void onLoginSuccess(Context context, Usuario usuario) {
-        // Guardamos el usuario y su id en las preferencias correctamente
-        PreferenceManager preferenceManager = new PreferenceManager(context);
-        preferenceManager.saveUser(usuario);
-    }
 
     public void clear() {
         editor.clear();

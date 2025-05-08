@@ -13,7 +13,6 @@
         android:layout_gravity="center"
         android:src="@drawable/imagen" />
 
-
     <!-- Espacio para los botones en dos columnas -->
     <GridLayout
         android:layout_width="match_parent"
@@ -58,5 +57,22 @@
 
     </GridLayout>
 
+    <!-- Título de reservas próximas -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Próximas Reservas"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold" />
+
+    <!-- RecyclerView para mostrar el listado de reservas -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reservasListado"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
 
 </LinearLayout>
