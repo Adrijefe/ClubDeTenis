@@ -20,7 +20,7 @@ public class ReservaRequest {
     private String estado;
 
     @SerializedName("fecha")  // Mapear el campo "fecha" para el JSON
-    private String fecha_reserva;
+    private String fecha;
 
     // Constructor con los parámetros adecuados
     public ReservaRequest(int usuarioId, int pistaId, String fecha, String horaInicio, String horaFin) {
@@ -29,7 +29,7 @@ public class ReservaRequest {
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.estado = "confirmado";  // Se puede mantener como un valor predeterminado
-        this.fecha_reserva = fecha; // Asignar la fecha del parámetro al campo
+        this.fecha = fecha; // Asignar la fecha del parámetro al campo
     }
 
     // Getters y setters
@@ -73,11 +73,11 @@ public class ReservaRequest {
         this.estado = estado;
     }
 
-    public String getFecha_reserva() {
-        return fecha_reserva;
+    public String getFecha() {
+        return fecha;
     }
 
-    public void setFecha_reserva(String fecha_reserva) {
-        this.fecha_reserva = fecha_reserva;
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
     }
 }

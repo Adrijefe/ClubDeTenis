@@ -8,11 +8,15 @@ import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
+import retrofit2.http.Path;
 
 public interface ApiService {
+
     @POST("login.php")
     Call<LoginResponse> login(@Body DTOLogin loginRequest);
 
@@ -31,4 +35,10 @@ public interface ApiService {
     @GET("reservas.php")
     Call<JsonObject> getHorasDisponibles(@Query("fecha") String fecha, @Query("pistaId") int pistaId);
 
+    @DELETE("reservas.php")
+    Call<Void> eliminarReserva(@Query("id") int reservaId);
+
+    // Nuevo método para obtener las reservas del día actual
+    @GET("reservas.php")
+    Call<JsonObject> getReservasHoy(@Query("reservasHoy") boolean reservasHoy);
 }

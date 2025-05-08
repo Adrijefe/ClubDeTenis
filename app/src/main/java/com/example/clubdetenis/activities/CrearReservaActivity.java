@@ -1,8 +1,7 @@
 package com.example.clubdetenis.activities;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,7 +42,6 @@ public class CrearReservaActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
     private int usuarioId;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +62,7 @@ public class CrearReservaActivity extends AppCompatActivity {
         spinnerHoras = findViewById(R.id.spinnerHoras);
         btnReservar = findViewById(R.id.btnReservar);
 
-        // Establecer la fecha mínima permitida en el DatePicker (no se pueden seleccionar fechas pasadas)
         datePicker.setMinDate(System.currentTimeMillis());
-
         cargarPistas();
 
         datePicker.init(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(),
@@ -99,19 +95,13 @@ public class CrearReservaActivity extends AppCompatActivity {
                         Type listType = new TypeToken<List<Pista>>(){}.getType();
                         pistas = gson.fromJson(pistasJson, listType);
 
-                        ArrayAdapter<Pista> adapter = new ArrayAdapter<>(
-                                CrearReservaActivity.this,
-                                android.R.layout.simple_spinner_item,
-                                pistas
-                        );
+                        ArrayAdapter<Pista> adapter = new ArrayAdapter<>(CrearReservaActivity.this,
+                                android.R.layout.simple_spinner_item, pistas);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinnerPistas.setAdapter(adapter);
                     } catch (Exception e) {
-                        Log.e("CrearReserva", "Error parsing pistas", e);
                         Toast.makeText(CrearReservaActivity.this, "Error al cargar pistas", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(CrearReservaActivity.this, "No se pudo cargar las pistas", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -123,11 +113,7 @@ public class CrearReservaActivity extends AppCompatActivity {
     }
 
     private void cargarHorasDisponibles() {
-        String fecha = String.format("%04d-%02d-%02d",
-                datePicker.getYear(),
-                datePicker.getMonth() + 1,
-                datePicker.getDayOfMonth());
-
+        String fecha = String.format("%04d-%02d-%02d", datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
         Pista pistaSeleccionada = (Pista) spinnerPistas.getSelectedItem();
         if (fecha.isEmpty() || pistaSeleccionada == null) {
             return;
@@ -149,20 +135,13 @@ public class CrearReservaActivity extends AppCompatActivity {
                             horasDisponibles.add(horasJson.get(i).getAsString());
                         }
 
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                CrearReservaActivity.this,
-                                android.R.layout.simple_spinner_item,
-                                horasDisponibles
-                        );
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(CrearReservaActivity.this,
+                                android.R.layout.simple_spinner_item, horasDisponibles);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinnerHoras.setAdapter(adapter);
-
                     } catch (Exception e) {
-                        Log.e("CrearReserva", "Error parsing horas", e);
                         Toast.makeText(CrearReservaActivity.this, "Error al cargar las horas disponibles", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(CrearReservaActivity.this, "No se pudieron cargar las horas", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -182,18 +161,9 @@ public class CrearReservaActivity extends AppCompatActivity {
             return;
         }
 
-        String fecha = String.format("%04d-%02d-%02d",
-                datePicker.getYear(),
-                datePicker.getMonth() + 1,
-                datePicker.getDayOfMonth());
+        String fecha = String.format("%04d-%02d-%02d", datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
 
-        ReservaRequest reservaRequest = new ReservaRequest(
-                usuarioId,
-                pistaSeleccionada.getId(),
-                fecha,
-                horaSeleccionada,
-                incrementarHora(horaSeleccionada)
-        );
+        ReservaRequest reservaRequest = new ReservaRequest(usuarioId, pistaSeleccionada.getId(), fecha, horaSeleccionada, incrementarHora(horaSeleccionada));
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         apiService.crearReserva(reservaRequest).enqueue(new Callback<JsonObject>() {
