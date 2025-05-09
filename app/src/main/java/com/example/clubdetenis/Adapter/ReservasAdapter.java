@@ -61,6 +61,15 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         return reservaList.size();
     }
 
+    // Método para actualizar los datos en el adaptador
+    public void updateData(List<Reserva> newReservaList) {
+        // Actualizamos la lista de reservas
+        this.reservaList.clear();
+        this.reservaList.addAll(newReservaList);
+        // Notificamos al adaptador que los datos han cambiado
+        notifyDataSetChanged();
+    }
+
     // Este es el método que eliminamos del servidor
     private void eliminarReserva(int position) {
         // Primero, obtenemos la reserva a eliminar

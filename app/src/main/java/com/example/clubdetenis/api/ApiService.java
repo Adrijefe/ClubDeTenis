@@ -38,7 +38,7 @@ public interface ApiService {
     @DELETE("reservas.php")
     Call<Void> eliminarReserva(@Query("id") int reservaId);
 
-    // Nuevo método para obtener las reservas del día actual
+    // Ajuste para el método que obtiene las reservas de hoy
     @GET("reservas.php")
     Call<JsonObject> getReservasHoy(@Query("reservasHoy") boolean reservasHoy);
 }

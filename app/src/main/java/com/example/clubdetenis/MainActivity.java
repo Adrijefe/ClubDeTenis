@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.clubdetenis.Adapter.ReservasAdapter;
 import com.example.clubdetenis.Utils.PreferenceManager;
+
 import com.example.clubdetenis.activities.CrearReservaActivity;
 import com.example.clubdetenis.activities.LoginActivity;
 import com.example.clubdetenis.activities.PistasActivity;
@@ -78,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
         loadProximasReservas();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProximasReservas(); // Recargar las reservas cuando la actividad vuelve al primer plano
+    }
+
     private void loadProximasReservas() {
         int usuarioId = preferenceManager.getUser().getId();
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
@@ -98,9 +105,13 @@ public class MainActivity extends AppCompatActivity {
                         // Filtrar reservas para hoy
                         List<Reserva> reservasHoy = filtrarReservasHoy(todasReservas);
 
-                        reservaList.clear();
-                        reservaList.addAll(reservasHoy);
-                        adapter.notifyDataSetChanged();
+                        if (reservasHoy.isEmpty()) {
+                            Toast.makeText(MainActivity.this, "No tienes reservas para hoy.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Actualizar datos en el adaptador y forzar la notificación de cambios
+                            adapter.updateData(reservasHoy);
+                            adapter.notifyDataSetChanged(); // Notificar el cambio de datos
+                        }
 
                     } catch (Exception e) {
                         Log.e("MainActivity", "Error al parsear JSON", e);
@@ -123,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         List<Reserva> reservasHoy = new ArrayList<>();
         String fechaHoy = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
+        // Verifica si las fechas coinciden
         for (Reserva reserva : todasReservas) {
             if (reserva.getFecha().equals(fechaHoy)) {
                 reservasHoy.add(reserva);
