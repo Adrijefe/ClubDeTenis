@@ -17,7 +17,7 @@ public class ApiClient {
                     .create();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://172.20.10.8//Miproyecto/")
+                    .baseUrl("http://192.168.68.144//Miproyecto/")
                     .addConverterFactory(GsonConverterFactory.create(gson)) // Usa Gson con la configuración lenient
                     .build();
         }

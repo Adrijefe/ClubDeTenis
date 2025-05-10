@@ -18,10 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
-        android:orientation="horizontal"
         android:layout_gravity="center"
-        android:rowCount="2"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:useDefaultMargins="true">
 
         <!-- Botón para ver pistas -->
         <Button
@@ -29,6 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
+            android:layout_gravity="fill"
             android:text="Ver Pistas" />
 
         <!-- Botón para ver reservas -->
@@ -37,6 +37,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
+            android:layout_gravity="fill"
             android:text="Mis Reservas" />
 
         <!-- Botón para hacer una reserva -->
@@ -45,6 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
+            android:layout_gravity="fill"
             android:text="Hacer una Reserva" />
 
         <!-- Botón para cerrar sesión -->
@@ -53,7 +55,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
+            android:layout_gravity="fill"
             android:text="Cerrar Sesión" />
+
+        <!-- Botón para gestionar usuarios, centrado ocupando ambas columnas -->
+        <Button
+            android:id="@+id/btnUsuarios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="Usuarios" />
 
     </GridLayout>
 

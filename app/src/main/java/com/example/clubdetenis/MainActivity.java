@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.clubdetenis.Adapter.ReservasAdapter;
 import com.example.clubdetenis.Utils.PreferenceManager;
-
 import com.example.clubdetenis.activities.CrearReservaActivity;
 import com.example.clubdetenis.activities.LoginActivity;
 import com.example.clubdetenis.activities.PistasActivity;
 import com.example.clubdetenis.activities.ReservasActivity;
+import com.example.clubdetenis.activities.UsuariosActivity;  // <-- Importar UsuariosActivity
 import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Reserva;
@@ -37,7 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnPistas, btnReservas, btnLogout, btnReservar;
+    private Button btnPistas, btnReservas, btnLogout, btnReservar, btnUsuarios;  // <-- Botón para usuarios
     private PreferenceManager preferenceManager;
 
     private RecyclerView recyclerView;
@@ -59,15 +59,26 @@ public class MainActivity extends AppCompatActivity {
         btnReservas = findViewById(R.id.btnReservas);
         btnLogout = findViewById(R.id.btnLogout);
         btnReservar = findViewById(R.id.btnNuevaReserva);
+        btnUsuarios = findViewById(R.id.btnUsuarios);  // <-- Botón para usuarios
 
+        // Navegar a PistasActivity
         btnPistas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, PistasActivity.class)));
+
+        // Navegar a ReservasActivity
         btnReservas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ReservasActivity.class)));
+
+        // Navegar a CrearReservaActivity
         btnReservar.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CrearReservaActivity.class)));
+
+        // Cerrar sesión y navegar a LoginActivity
         btnLogout.setOnClickListener(v -> {
             preferenceManager.clear();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         });
+
+        // Navegar a UsuariosActivity
+        btnUsuarios.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, UsuariosActivity.class)));  // <-- Navegación correcta
 
         // Configurar RecyclerView
         recyclerView = findViewById(R.id.reservasListado);
@@ -75,14 +86,15 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ReservasAdapter(this, reservaList);
         recyclerView.setAdapter(adapter);
 
-        // Cargar reservas próximas
+        // Cargar reservas próximas al iniciar
         loadProximasReservas();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        loadProximasReservas(); // Recargar las reservas cuando la actividad vuelve al primer plano
+        // Recargar reservas cuando vuelve a primer plano (por si se eliminaron en ReservasActivity)
+        loadProximasReservas();
     }
 
     private void loadProximasReservas() {
@@ -107,11 +119,10 @@ public class MainActivity extends AppCompatActivity {
 
                         if (reservasHoy.isEmpty()) {
                             Toast.makeText(MainActivity.this, "No tienes reservas para hoy.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Actualizar datos en el adaptador y forzar la notificación de cambios
-                            adapter.updateData(reservasHoy);
-                            adapter.notifyDataSetChanged(); // Notificar el cambio de datos
                         }
+
+                        // Actualizar datos en el adaptador siempre, incluso si está vacío
+                        adapter.updateData(reservasHoy);
 
                     } catch (Exception e) {
                         Log.e("MainActivity", "Error al parsear JSON", e);
@@ -134,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
         List<Reserva> reservasHoy = new ArrayList<>();
         String fechaHoy = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        // Verifica si las fechas coinciden
         for (Reserva reserva : todasReservas) {
             if (reserva.getFecha().equals(fechaHoy)) {
                 reservasHoy.add(reserva);

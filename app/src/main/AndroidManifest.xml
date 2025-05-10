@@ -50,6 +50,10 @@
             android:name=".activities.CrearReservaActivity"
             android:exported="true"
             android:theme="@style/Theme.ClubDeTenis" />
+        <activity
+            android:name=".activities.UsuariosActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClubDeTenis" />
     </application>
 
 </manifest>
