@@ -16,10 +16,10 @@ public class ReservaRequest {
     @SerializedName("horaFin")
     private String horaFin;
 
-    @SerializedName("estado")  // Agregar el mapeo para el campo "estado"
+    @SerializedName("estado")
     private String estado;
 
-    @SerializedName("fecha")  // Mapear el campo "fecha" para el JSON
+    @SerializedName("fecha")
     private String fecha;
 
     // Constructor con los parámetros adecuados

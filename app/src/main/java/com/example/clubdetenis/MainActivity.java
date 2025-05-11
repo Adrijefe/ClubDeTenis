@@ -3,6 +3,7 @@ package com.example.clubdetenis;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.example.clubdetenis.activities.UsuariosActivity;  // <-- Importar Usu
 import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Reserva;
+import com.example.clubdetenis.models.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -77,8 +79,16 @@ public class MainActivity extends AppCompatActivity {
             finish();
         });
 
-        // Navegar a UsuariosActivity
-        btnUsuarios.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, UsuariosActivity.class)));  // <-- Navegación correcta
+        // Navegar a UsuariosActivity solo si el usuario es Administrador
+        btnUsuarios.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, UsuariosActivity.class)));
+
+        // Verificar si el usuario es Administrador y ocultar el botón de Usuarios si no lo es
+        Usuario loggedUser = preferenceManager.getUser();
+        if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
+            btnUsuarios.setVisibility(View.VISIBLE);  // Mostrar el botón de Usuarios si es Administrador
+        } else {
+            btnUsuarios.setVisibility(View.GONE);  // Ocultar el botón de Usuarios si no es Administrador
+        }
 
         // Configurar RecyclerView
         recyclerView = findViewById(R.id.reservasListado);

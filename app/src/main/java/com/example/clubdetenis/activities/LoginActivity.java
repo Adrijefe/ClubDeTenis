@@ -19,6 +19,8 @@ import com.example.clubdetenis.api.ApiService;
 
 import com.example.clubdetenis.models.Usuario;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,16 +66,29 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    Usuario loggedUser = response.body().getUser();
-                    Log.d("LoginActivity", "Usuario ID recibido: " + loggedUser.getId());
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginResponse loginResponse = response.body();
+                    if (loginResponse.isSuccess()) {
+                        Usuario loggedUser = loginResponse.getUser();
+                        Log.d("LoginActivity", "Usuario ID recibido: " + loggedUser.getId());
+                        Log.d("LoginActivity", "Perfil del usuario: " + loggedUser.getPerfil());
 
-                    preferenceManager.saveUser(loggedUser);
+                        preferenceManager.saveUser(loggedUser);
 
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    finish();
+                        // Acceso sin restricciones adicionales para todos los usuarios
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(LoginActivity.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "No hay cuerpo de error";
+                        Log.e("LoginActivity", "Error: " + errorBody);
+                        Toast.makeText(LoginActivity.this, "Error de respuesta del servidor: " + errorBody, Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -84,4 +99,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
 }

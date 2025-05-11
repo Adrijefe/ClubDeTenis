@@ -38,7 +38,7 @@
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Contraseña"
+        android:hint="Contraseña (Opcional para eliminar)"
         android:inputType="textPassword"
         android:layout_marginBottom="16dp"/>
 
@@ -47,7 +47,7 @@
         android:id="@+id/etTelefono"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Teléfono"
+        android:hint="Teléfono (Opcional para eliminar)"
         android:inputType="phone"
         android:layout_marginBottom="16dp"/>
 
