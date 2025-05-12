@@ -145,9 +145,7 @@ public class UsuariosActivity extends AppCompatActivity {
         });
     }
 
-    // Método para eliminar un usuario
     private void deleteUsuario(String nombre, String email) {
-        // Llamada al servicio Retrofit para eliminar el usuario
         apiService.eliminarUsuario(nombre, email).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -155,7 +153,12 @@ public class UsuariosActivity extends AppCompatActivity {
                     Toast.makeText(UsuariosActivity.this, "Usuario eliminado con éxito", Toast.LENGTH_SHORT).show();
                     loadUsuarios(); // Recargar la lista de usuarios después de eliminar
                 } else {
-                    Toast.makeText(UsuariosActivity.this, "Error al eliminar el usuario", Toast.LENGTH_SHORT).show();
+                    // Si el backend devuelve 404 o 400, mostramos mensaje personalizado
+                    if (response.code() == 404) {
+                        Toast.makeText(UsuariosActivity.this, "Usuario no encontrado. Verifique el nombre y el correo.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(UsuariosActivity.this, "No se pudo eliminar el usuario. Intente nuevamente.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -165,4 +168,5 @@ public class UsuariosActivity extends AppCompatActivity {
             }
         });
     }
+
 }

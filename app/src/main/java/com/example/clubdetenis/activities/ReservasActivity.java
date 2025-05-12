@@ -52,8 +52,10 @@ public class ReservasActivity extends AppCompatActivity {
     }
 
     private void loadReservas(int usuarioId) {
+        String perfil = preferenceManager.getUser().getPerfil(); // Asegúrate de tener esto en tu User/Usuario model
+
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<JsonObject> call = apiService.getReservas(usuarioId); // ⚠️ Ya no es List<Reserva>
+        Call<JsonObject> call = apiService.getReservasPorPerfil(true,usuarioId, perfil); // ✅ nueva llamada
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -87,4 +89,5 @@ public class ReservasActivity extends AppCompatActivity {
             }
         });
     }
+
 }

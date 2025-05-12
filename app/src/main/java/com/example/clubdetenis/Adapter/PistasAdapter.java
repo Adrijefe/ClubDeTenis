@@ -36,7 +36,7 @@ public class PistasAdapter extends RecyclerView.Adapter<PistasAdapter.PistaViewH
         Pista pista = pistaList.get(position);
         holder.tvNombre.setText(pista.getNombre());
         holder.tvTipo.setText(pista.getTipo());
-        holder.tvPrecio.setText(String.format("€%.2f/hora", pista.getPrecioHora()));
+        holder.tvPrecio.setText(pista.getDescripcion());
     }
 
     @Override

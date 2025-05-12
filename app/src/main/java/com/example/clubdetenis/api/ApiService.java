@@ -31,7 +31,16 @@ public interface ApiService {
     Call<JsonObject> crearReserva(@Body ReservaRequest reservaRequest);
 
     @GET("reservas.php")
-    Call<JsonObject> getReservas(@Query("usuario_id") int usuarioId);
+    Call<JsonObject> getReservas(@Query("usuarioId") int usuarioId); // solo sus reservas
+
+    @GET("reservas.php")
+    Call<JsonObject> getReservasPorPerfil(
+            @Query("misreservas") boolean misReservas,
+            @Query("usuarioId") int usuarioId,
+            @Query("perfil") String perfil
+    );
+
+
 
     @GET("pista.php")
     Call<JsonObject> getPistasDisponibles();
