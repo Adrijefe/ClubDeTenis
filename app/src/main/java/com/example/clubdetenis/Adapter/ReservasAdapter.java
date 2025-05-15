@@ -12,15 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.clubdetenis.R;
-import com.example.clubdetenis.models.Reserva;
+import com.example.clubdetenis.Utils.PreferenceManager;
 import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
+import com.example.clubdetenis.models.Reserva;
+import com.example.clubdetenis.models.Usuario;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import java.util.List;
 
 public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.ReservaViewHolder> {
     private Context context;
@@ -47,11 +49,22 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         holder.tvEstado.setText(reserva.getEstado());
         holder.tvUsuarioNombre.setText(reserva.getUsuarioNombre());
 
-        // Configuramos el botón de eliminar para cada ítem
+        // Obtener usuario actual
+        PreferenceManager preferenceManager = new PreferenceManager(context);
+        Usuario usuarioActual = preferenceManager.getUser();
+
+        // Mostrar u ocultar el botón "Eliminar" según permisos
+        if ("Administrador".equals(usuarioActual.getPerfil()) || usuarioActual.getId() == reserva.getUsuarioId()) {
+            holder.btnEliminar.setVisibility(View.VISIBLE);
+        } else {
+            holder.btnEliminar.setVisibility(View.GONE);
+        }
+
+        // Acción al pulsar el botón eliminar (si es visible)
         holder.btnEliminar.setOnClickListener(v -> {
-            int positionToRemove = holder.getAdapterPosition(); // Obtener la posición del item
+            int positionToRemove = holder.getAdapterPosition();
             if (positionToRemove != RecyclerView.NO_POSITION) {
-                eliminarReserva(positionToRemove); // Llamamos al método eliminarReserva
+                eliminarReserva(positionToRemove);
             }
         });
     }
@@ -61,21 +74,15 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         return reservaList.size();
     }
 
-    // Método para actualizar los datos en el adaptador
     public void updateData(List<Reserva> newReservaList) {
-        // Actualizamos la lista de reservas
         this.reservaList.clear();
         this.reservaList.addAll(newReservaList);
-        // Notificamos al adaptador que los datos han cambiado
         notifyDataSetChanged();
     }
 
-    // Este es el método que eliminamos del servidor
     private void eliminarReserva(int position) {
-        // Primero, obtenemos la reserva a eliminar
         Reserva reservaAEliminar = reservaList.get(position);
 
-        // Realizamos la llamada al servicio de la API para eliminar la reserva
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         Call<Void> call = apiService.eliminarReserva(reservaAEliminar.getId());
 
@@ -83,12 +90,10 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    // Si la respuesta es exitosa, eliminamos el ítem de la lista
                     reservaList.remove(position);
-                    notifyItemRemoved(position);  // Notificamos al RecyclerView que eliminamos el ítem
+                    notifyItemRemoved(position);
                     Toast.makeText(context, "Reserva eliminada exitosamente", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Si ocurre un error en la eliminación
                     Toast.makeText(context, "Error al eliminar la reserva", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -111,7 +116,7 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
             tvHora = itemView.findViewById(R.id.tvHora);
             tvEstado = itemView.findViewById(R.id.tvEstado);
             tvUsuarioNombre = itemView.findViewById(R.id.tvUsuarioNombre);
-            btnEliminar = itemView.findViewById(R.id.btnEliminar);  // Botón de eliminar
+            btnEliminar = itemView.findViewById(R.id.btnEliminar);
         }
     }
 }
