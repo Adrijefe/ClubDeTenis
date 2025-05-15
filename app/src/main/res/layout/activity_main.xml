@@ -1,89 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <!-- Imagen centrada en la pantalla -->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center"
-        android:src="@drawable/imagen" />
-
-    <!-- Espacio para los botones en dos columnas -->
-    <GridLayout
+    <!-- Toolbar en la parte superior -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        android:useDefaultMargins="true">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Mi Perfil"
+        app:titleTextColor="@android:color/white"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <!-- Botón para ver pistas -->
-        <Button
-            android:id="@+id/btnPistas"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:text="Ver Pistas" />
+    <!-- Contenido principal -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <!-- Botón para ver reservas -->
-        <Button
-            android:id="@+id/btnReservas"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:text="Mis Reservas" />
-
-        <!-- Botón para hacer una reserva -->
-        <Button
-            android:id="@+id/btnNuevaReserva"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:text="Hacer una Reserva" />
-
-        <!-- Botón para cerrar sesión -->
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:text="Cerrar Sesión" />
-
-        <!-- Botón para gestionar usuarios, centrado ocupando ambas columnas -->
-        <Button
-            android:id="@+id/btnUsuarios"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_columnSpan="2"
-            android:text="Usuarios" />
+            android:orientation="vertical">
 
-    </GridLayout>
+            <!-- Imagen centrada -->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                android:src="@drawable/imagen" />
 
-    <!-- Título de reservas próximas -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reservas Hoy"
-        android:textSize="18sp"
-        android:layout_marginTop="20dp"
-        android:textStyle="bold" />
+            <!-- Botones en dos columnas -->
+            <GridLayout
+                android:id="@+id/gridLayoutButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"
+                android:useDefaultMargins="true">
 
-    <!-- RecyclerView para mostrar el listado de reservas -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reservasListado"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical" />
+                <Button
+                    android:id="@+id/btnPistas"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="fill"
+                    android:text="Pistas" />
+
+                <Button
+                    android:id="@+id/btnReservas"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="fill"
+                    android:text="Mis Reservas" />
+
+                <Button
+                    android:id="@+id/btnNuevaReserva"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="fill"
+                    android:text="Nueva Reserva" />
+
+                <Button
+                    android:id="@+id/btnUsuarios"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="fill"
+                    android:text="Usuarios" />
+            </GridLayout>
+
+            <!-- Título de reservas -->
+            <TextView
+                android:id="@+id/tvReservasHoy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reservas"
+                android:textSize="18sp"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold" />
+
+
+            <!-- RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reservasListado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

@@ -3,11 +3,14 @@ package com.example.clubdetenis;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +20,7 @@ import com.example.clubdetenis.activities.CrearReservaActivity;
 import com.example.clubdetenis.activities.LoginActivity;
 import com.example.clubdetenis.activities.PistasActivity;
 import com.example.clubdetenis.activities.ReservasActivity;
-import com.example.clubdetenis.activities.UsuariosActivity;  // <-- Importar UsuariosActivity
+import com.example.clubdetenis.activities.UsuariosActivity;
 import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Reserva;
@@ -39,12 +42,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnPistas, btnReservas, btnLogout, btnReservar, btnUsuarios;  // <-- Botón para usuarios
+    private Button btnPistas, btnReservas, btnReservar, btnUsuarios;
     private PreferenceManager preferenceManager;
 
     private RecyclerView recyclerView;
     private ReservasAdapter adapter;
     private List<Reserva> reservaList = new ArrayList<>();
+
+    private TextView tvReservasHoy;  // <-- Añadido
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,55 +60,47 @@ public class MainActivity extends AppCompatActivity {
         if (!preferenceManager.isLoggedIn()) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
+            return;
         }
+
+        // Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         btnPistas = findViewById(R.id.btnPistas);
         btnReservas = findViewById(R.id.btnReservas);
-        btnLogout = findViewById(R.id.btnLogout);
         btnReservar = findViewById(R.id.btnNuevaReserva);
-        btnUsuarios = findViewById(R.id.btnUsuarios);  // <-- Botón para usuarios
+        btnUsuarios = findViewById(R.id.btnUsuarios);
 
-        // Navegar a PistasActivity
         btnPistas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, PistasActivity.class)));
-
-        // Navegar a ReservasActivity
         btnReservas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ReservasActivity.class)));
-
-        // Navegar a CrearReservaActivity
         btnReservar.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CrearReservaActivity.class)));
-
-        // Cerrar sesión y navegar a LoginActivity
-        btnLogout.setOnClickListener(v -> {
-            preferenceManager.clear();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
-        });
-
-        // Navegar a UsuariosActivity solo si el usuario es Administrador
         btnUsuarios.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, UsuariosActivity.class)));
 
-        // Verificar si el usuario es Administrador y ocultar el botón de Usuarios si no lo es
         Usuario loggedUser = preferenceManager.getUser();
         if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
-            btnUsuarios.setVisibility(View.VISIBLE);  // Mostrar el botón de Usuarios si es Administrador
+            btnUsuarios.setVisibility(android.view.View.VISIBLE);
         } else {
-            btnUsuarios.setVisibility(View.GONE);  // Ocultar el botón de Usuarios si no es Administrador
+            btnUsuarios.setVisibility(android.view.View.GONE);
         }
 
-        // Configurar RecyclerView
         recyclerView = findViewById(R.id.reservasListado);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ReservasAdapter(this, reservaList);
         recyclerView.setAdapter(adapter);
 
-        // Cargar reservas próximas al iniciar
+        // Referencia el TextView y actualiza la fecha aquí
+        tvReservasHoy = findViewById(R.id.tvReservasHoy);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        String fechaActual = sdf.format(new Date());
+        tvReservasHoy.setText("Reservas Hoy - " + fechaActual);
+
         loadProximasReservas();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Recargar reservas cuando vuelve a primer plano (por si se eliminaron en ReservasActivity)
         loadProximasReservas();
     }
 
@@ -124,14 +121,12 @@ public class MainActivity extends AppCompatActivity {
                         Type listType = new TypeToken<List<Reserva>>() {}.getType();
                         List<Reserva> todasReservas = gson.fromJson(reservasJson, listType);
 
-                        // Filtrar reservas para hoy
                         List<Reserva> reservasHoy = filtrarReservasHoy(todasReservas);
 
                         if (reservasHoy.isEmpty()) {
                             Toast.makeText(MainActivity.this, "No tienes reservas para hoy.", Toast.LENGTH_SHORT).show();
                         }
 
-                        // Actualizar datos en el adaptador siempre, incluso si está vacío
                         adapter.updateData(reservasHoy);
 
                     } catch (Exception e) {
@@ -160,7 +155,23 @@ public class MainActivity extends AppCompatActivity {
                 reservasHoy.add(reserva);
             }
         }
-
         return reservasHoy;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_logout) {
+            preferenceManager.clear();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
