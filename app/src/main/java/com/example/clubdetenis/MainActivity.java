@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         tvReservasHoy = findViewById(R.id.tvReservasHoy);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String fechaActual = sdf.format(new Date());
-        tvReservasHoy.setText("Reservas Hoy - " + fechaActual);
+        tvReservasHoy.setText("Reservas - " + fechaActual);
 
         loadProximasReservas();
     }
@@ -148,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Reserva> filtrarReservasHoy(List<Reserva> todasReservas) {
         List<Reserva> reservasHoy = new ArrayList<>();
-        String fechaHoy = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        String fechaHoy = formatoFecha.format(new Date());
 
         for (Reserva reserva : todasReservas) {
             if (reserva.getFecha().equals(fechaHoy)) {
@@ -156,7 +157,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return reservasHoy;
-    }
+
+}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

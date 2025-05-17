@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UsuariosActivity extends AppCompatActivity {
+public class UsuariosActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private RecyclerView recyclerViewUsuarios;
     private Button btnAñadirUsuario, btnEliminarUsuario;
@@ -38,6 +39,7 @@ public class UsuariosActivity extends AppCompatActivity {
     private ApiService apiService;
     private List<Usuario> usuariosList = new ArrayList<>();
     private UsuariosAdapter usuarioAdapter;
+    SearchView txtBuscar;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -56,7 +58,8 @@ public class UsuariosActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);  // Campo para la contraseña
         etTelefono = findViewById(R.id.etTelefono);  // Campo para el teléfono
-        etPerfil = findViewById(R.id.spinnerPerfil);  // Spinner para el perfil
+        etPerfil = findViewById(R.id.spinnerPerfil);// Spinner para el perfil
+        txtBuscar = findViewById(R.id.searchView);
 
         // Configurar el Spinner con opciones de perfil
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -71,6 +74,8 @@ public class UsuariosActivity extends AppCompatActivity {
 
         // Cargar usuarios al iniciar la actividad
         loadUsuarios();
+
+
 
         // Acción del botón Añadir Usuario
         btnAñadirUsuario.setOnClickListener(v -> {
@@ -99,6 +104,8 @@ public class UsuariosActivity extends AppCompatActivity {
                 Toast.makeText(UsuariosActivity.this, "Por favor, ingrese nombre y correo del usuario a eliminar.", Toast.LENGTH_SHORT).show();
             }
         });
+
+        txtBuscar.setOnQueryTextListener(this);
     }
 
     private void loadUsuarios() {
@@ -169,4 +176,14 @@ public class UsuariosActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        usuarioAdapter.filtrado(s);
+        return false;
+    }
 }

@@ -49,18 +49,18 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         holder.tvEstado.setText(reserva.getEstado());
         holder.tvUsuarioNombre.setText(reserva.getUsuarioNombre());
 
-        // Obtener usuario actual
+        // Mostrar el ID del usuario al lado del nombre
+        holder.tvUsuarioId.setText("ID: " + reserva.getUsuarioId() + "");
+
         PreferenceManager preferenceManager = new PreferenceManager(context);
         Usuario usuarioActual = preferenceManager.getUser();
 
-        // Mostrar u ocultar el botón "Eliminar" según permisos
         if ("Administrador".equals(usuarioActual.getPerfil()) || usuarioActual.getId() == reserva.getUsuarioId()) {
             holder.btnEliminar.setVisibility(View.VISIBLE);
         } else {
             holder.btnEliminar.setVisibility(View.GONE);
         }
 
-        // Acción al pulsar el botón eliminar (si es visible)
         holder.btnEliminar.setOnClickListener(v -> {
             int positionToRemove = holder.getAdapterPosition();
             if (positionToRemove != RecyclerView.NO_POSITION) {
@@ -106,7 +106,7 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
     }
 
     public static class ReservaViewHolder extends RecyclerView.ViewHolder {
-        TextView tvPista, tvFecha, tvHora, tvEstado, tvUsuarioNombre;
+        TextView tvPista, tvFecha, tvHora, tvEstado, tvUsuarioNombre, tvUsuarioId;
         Button btnEliminar;
 
         public ReservaViewHolder(@NonNull View itemView) {
@@ -116,6 +116,7 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
             tvHora = itemView.findViewById(R.id.tvHora);
             tvEstado = itemView.findViewById(R.id.tvEstado);
             tvUsuarioNombre = itemView.findViewById(R.id.tvUsuarioNombre);
+            tvUsuarioId = itemView.findViewById(R.id.tvUsuarioId);  // Nuevo TextView para el ID
             btnEliminar = itemView.findViewById(R.id.btnEliminar);
         }
     }

@@ -11,45 +11,85 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingEnd="8dp">
 
-        <!-- Nombre del usuario más grande y en la parte superior -->
-        <TextView
-            android:id="@+id/tvUsuarioNombre"
+        <!-- Línea con ID y Usuario juntos -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Usuario: "
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
 
-        <!-- Otros datos de la reserva con texto más grande -->
+            <TextView
+                android:id="@+id/tvUsuarioId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#37474F"
+                android:background="#E0F7FA"
+                android:padding="4dp"
+                android:minWidth="36dp"
+                android:gravity="center"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:clipToPadding="false" />
+
+            <TextView
+                android:id="@+id/tvUsuarioNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Usuario:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#263238" />
+        </LinearLayout>
+
+        <!-- Separador fino -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CFD8DC"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Otros datos de la reserva con estilo -->
         <TextView
             android:id="@+id/tvPista"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pista: "
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="#455A64"
+            android:layout_marginBottom="2dp" />
 
         <TextView
             android:id="@+id/tvFecha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Fecha: "
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="#607D8B"
+            android:layout_marginBottom="2dp" />
 
         <TextView
             android:id="@+id/tvHora"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hora: "
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="#607D8B"
+            android:layout_marginBottom="2dp" />
 
         <TextView
             android:id="@+id/tvEstado"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Estado: "
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="#607D8B" />
     </LinearLayout>
 
     <!-- Botón de eliminar al lado de cada item -->
@@ -57,6 +97,14 @@
         android:id="@+id/btnEliminar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancelar Reserva"
-        android:layout_gravity="center_vertical" />
+        android:text="Cancelar"
+        android:backgroundTint="#E53935"
+        android:textColor="#FFFFFF"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:minWidth="80dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"/>
 </LinearLayout>
