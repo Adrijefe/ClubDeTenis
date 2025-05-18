@@ -18,7 +18,9 @@ import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Reserva;
 import com.example.clubdetenis.models.Usuario;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,10 +29,13 @@ import retrofit2.Response;
 public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.ReservaViewHolder> {
     private Context context;
     private List<Reserva> reservaList;
+    private List<Reserva> reservaListFull;
 
     public ReservasAdapter(Context context, List<Reserva> reservaList) {
         this.context = context;
         this.reservaList = reservaList;
+        this.reservaListFull = new ArrayList<>();
+        reservaListFull.addAll(reservaList);
     }
 
     @NonNull
@@ -38,6 +43,26 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
     public ReservaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_reserva, parent, false);
         return new ReservaViewHolder(view);
+    }
+
+    public void filtrado(final String text) {
+        int textLength = text.length();
+        if (textLength == 0) {
+            reservaList.clear();
+            reservaList.addAll(reservaListFull);  // ← CORREGIDO
+        } else {
+            List<Reserva> coleccion = reservaList.stream().filter(i -> i.getUsuarioNombre().toLowerCase().contains(text.toLowerCase())).collect(Collectors.toList());
+            reservaList.clear();
+            reservaList.addAll(coleccion);
+        }
+        notifyDataSetChanged();
+    }
+    public void setReserva(List<Reserva> nuevasReservas) {
+        reservaList.clear();
+        reservaList.addAll(nuevasReservas);
+        reservaListFull.clear();
+        reservaListFull.addAll(nuevasReservas);
+        notifyDataSetChanged();
     }
 
     @Override

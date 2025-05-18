@@ -202,10 +202,4 @@ public class CrearReservaActivity extends AppCompatActivity {
         return String.format("%04d-%02d-%02d", year, month, day);
     }
 
-    private String getFechaFormatoEspana() {
-        int day = datePicker.getDayOfMonth();
-        int month = datePicker.getMonth() + 1;
-        int year = datePicker.getYear();
-        return String.format("%02d/%02d/%04d", day, month, year);
-    }
 }

@@ -3,6 +3,7 @@ package com.example.clubdetenis.activities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,11 +29,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReservasActivity extends AppCompatActivity {
+public class ReservasActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+
     private RecyclerView recyclerView;
     private ReservasAdapter adapter;
     private List<Reserva> reservaList = new ArrayList<>();
     private PreferenceManager preferenceManager;
+    private SearchView searchView;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -45,17 +48,21 @@ public class ReservasActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewReservas);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         adapter = new ReservasAdapter(this, reservaList);
         recyclerView.setAdapter(adapter);
+
+        searchView = findViewById(R.id.searchView); // Asegúrate que exista en el layout
+        searchView.setOnQueryTextListener(this);
 
         loadReservas(usuarioId);
     }
 
     private void loadReservas(int usuarioId) {
-        String perfil = preferenceManager.getUser().getPerfil(); // Asegúrate de tener esto en tu User/Usuario model
+        String perfil = preferenceManager.getUser().getPerfil();
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<JsonObject> call = apiService.getReservasPorPerfil(true,usuarioId, perfil); // ✅ nueva llamada
+        Call<JsonObject> call = apiService.getReservasPorPerfil(true, usuarioId, perfil);
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -69,9 +76,7 @@ public class ReservasActivity extends AppCompatActivity {
                         Type listType = new TypeToken<List<Reserva>>() {}.getType();
                         List<Reserva> reservas = gson.fromJson(reservasJson, listType);
 
-                        reservaList.clear();
-                        reservaList.addAll(reservas);
-                        adapter.notifyDataSetChanged();
+                        adapter.setReserva(reservas);
 
                     } catch (Exception e) {
                         Log.e("ReservasActivity", "Error al parsear JSON", e);
@@ -90,4 +95,14 @@ public class ReservasActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;  // No hacemos nada al enviar
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.filtrado(newText);
+        return false;
+    }
 }

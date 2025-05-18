@@ -22,62 +22,38 @@ public class ReservaRequest {
     @SerializedName("fecha")
     private String fecha;
 
-    // Constructor con los parámetros adecuados
+    // Estos campos nuevos para que el backend valide el admin que crea la reserva
+    @SerializedName("usuarioIdSolicitante")
+    private Integer usuarioIdSolicitante;  // Integer para que pueda ser null
+
+    @SerializedName("perfil")
+    private String perfil;
+
     public ReservaRequest(int usuarioId, int pistaId, String fecha, String horaInicio, String horaFin) {
         this.usuarioId = usuarioId;
         this.pistaId = pistaId;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
-        this.estado = "confirmado";  // Se puede mantener como un valor predeterminado
-        this.fecha = fecha; // Asignar la fecha del parámetro al campo
-    }
-
-    // Getters y setters
-    public int getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(int usuarioId) {
-        this.usuarioId = usuarioId;
-    }
-
-    public int getPistaId() {
-        return pistaId;
-    }
-
-    public void setPistaId(int pistaId) {
-        this.pistaId = pistaId;
-    }
-
-    public String getHoraInicio() {
-        return horaInicio;
-    }
-
-    public void setHoraInicio(String horaInicio) {
-        this.horaInicio = horaInicio;
-    }
-
-    public String getHoraFin() {
-        return horaFin;
-    }
-
-    public void setHoraFin(String horaFin) {
-        this.horaFin = horaFin;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
+        this.estado = "confirmado";
         this.fecha = fecha;
     }
+
+    // Getters y setters de siempre...
+
+    public Integer getUsuarioIdSolicitante() {
+        return usuarioIdSolicitante;
+    }
+
+    public void setUsuarioIdSolicitante(Integer usuarioIdSolicitante) {
+        this.usuarioIdSolicitante = usuarioIdSolicitante;
+    }
+
+    public String getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(String perfil) {
+        this.perfil = perfil;
+    }
+
 }
