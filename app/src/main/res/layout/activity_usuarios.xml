@@ -24,13 +24,14 @@
             android:layout_centerInParent="true"
             android:fontFamily="sans-serif-medium" />
     </RelativeLayout>
+
     <EditText
         android:id="@+id/etNombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nombre y Apellidos del usuario"
         android:inputType="textPersonName"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp" />
 
     <!-- Campo Email -->
     <EditText
@@ -39,7 +40,7 @@
         android:layout_height="wrap_content"
         android:hint="Email del usuario"
         android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp" />
 
     <!-- Campo Contraseña -->
     <EditText
@@ -48,7 +49,7 @@
         android:layout_height="wrap_content"
         android:hint="Contraseña (Opcional para eliminar)"
         android:inputType="textPassword"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp" />
 
     <!-- Campo Teléfono -->
     <EditText
@@ -57,36 +58,28 @@
         android:layout_height="wrap_content"
         android:hint="Teléfono (Opcional para eliminar)"
         android:inputType="phone"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp" />
 
     <!-- Campo Perfil -->
     <Spinner
         android:id="@+id/spinnerPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="24dp" />
 
-    <!-- Botones Añadir y Eliminar en horizontal -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Botón Añadir Usuario centrado -->
+    <Button
+        android:id="@+id/btnAñadirUsuario"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="24dp">
-
-        <Button
-            android:id="@+id/btnAñadirUsuario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Añadir Usuario"
-            android:layout_marginEnd="16dp"/>
-
-        <Button
-            android:id="@+id/btnEliminarUsuario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Eliminar Usuario"/>
-    </LinearLayout>
+        android:text="Añadir Usuario"
+        android:layout_gravity="center"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:layout_marginBottom="24dp" />
 
     <!-- Lista de usuarios existentes -->
     <TextView
@@ -95,19 +88,18 @@
         android:text="Usuarios existentes"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginTop="24dp"/>
-
+        android:layout_marginBottom="8dp" />
 
     <SearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerUsuarios"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>
