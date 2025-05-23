@@ -5,15 +5,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Toolbar en la parte superior -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:title="Mi Perfil"
+        app:title=""
         app:titleTextColor="@android:color/white"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+
 
     <!-- Contenido principal -->
     <ScrollView

@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+
     <!-- Título centrado -->
     <RelativeLayout
         android:layout_width="match_parent"
@@ -47,7 +48,7 @@
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Contraseña (Opcional para eliminar)"
+        android:hint="Contraseña"
         android:inputType="textPassword"
         android:layout_marginBottom="16dp" />
 
@@ -56,7 +57,7 @@
         android:id="@+id/etTelefono"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Teléfono (Opcional para eliminar)"
+        android:hint="Teléfono"
         android:inputType="phone"
         android:layout_marginBottom="16dp" />
 

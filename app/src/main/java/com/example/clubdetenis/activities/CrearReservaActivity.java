@@ -1,6 +1,9 @@
 package com.example.clubdetenis.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -10,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.clubdetenis.R;
 import com.example.clubdetenis.Utils.PreferenceManager;
@@ -25,7 +29,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,6 +49,10 @@ public class CrearReservaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_reserva);
+
+        // Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         preferenceManager = new PreferenceManager(this);
         Usuario usuario = preferenceManager.getUser();
@@ -113,7 +120,7 @@ public class CrearReservaActivity extends AppCompatActivity {
     }
 
     private void cargarHorasDisponibles() {
-        String fechaApi = getFechaFormatoApi(); // yyyy-MM-dd
+        String fechaApi = getFechaFormatoApi();
         Pista pistaSeleccionada = (Pista) spinnerPistas.getSelectedItem();
         if (fechaApi.isEmpty() || pistaSeleccionada == null) {
             return;
@@ -161,7 +168,7 @@ public class CrearReservaActivity extends AppCompatActivity {
             return;
         }
 
-        String fechaApi = getFechaFormatoApi(); // yyyy-MM-dd
+        String fechaApi = getFechaFormatoApi();
 
         ReservaRequest reservaRequest = new ReservaRequest(usuarioId, pistaSeleccionada.getId(), fechaApi, horaSeleccionada, incrementarHora(horaSeleccionada));
 
@@ -197,9 +204,59 @@ public class CrearReservaActivity extends AppCompatActivity {
 
     private String getFechaFormatoApi() {
         int day = datePicker.getDayOfMonth();
-        int month = datePicker.getMonth() + 1; // enero = 0
+        int month = datePicker.getMonth() + 1;
         int year = datePicker.getYear();
         return String.format("%04d-%02d-%02d", year, month, day);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+
+        MenuItem menuUsuarios = menu.findItem(R.id.menu_usuarios);
+
+        Usuario loggedUser = preferenceManager.getUser(); // Obtener el usuario logueado
+
+        if (menuUsuarios != null) {
+            if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
+                menuUsuarios.setVisible(true);
+            } else {
+                menuUsuarios.setVisible(false);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Usuario loggedUser = preferenceManager.getUser();
+
+        if (id == R.id.menu_crear_reserva) {
+            Toast.makeText(this, "Ya estás en Crear Reserva", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.menu_pistas) {
+            startActivity(new Intent(this, PistasActivity.class));
+            return true;
+        } else if (id == R.id.menu_reservas) {
+            startActivity(new Intent(this, ReservasActivity.class));
+            return true;
+        } else if (id == R.id.menu_usuarios) {
+            if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
+                startActivity(new Intent(this, UsuariosActivity.class));
+            } else {
+                Toast.makeText(this, "No tienes permisos para acceder", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        } else if (id == R.id.menu_logout) {
+            preferenceManager.clear();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -40,8 +40,6 @@ public interface ApiService {
             @Query("perfil") String perfil
     );
 
-
-
     @GET("pista.php")
     Call<JsonObject> getPistasDisponibles();
 
@@ -51,8 +49,6 @@ public interface ApiService {
     @DELETE("reservas.php")
     Call<Void> eliminarReserva(@Query("id") int reservaId);
 
-    @GET("reservas.php")
-    Call<JsonObject> getReservasHoy(@Query("reservasHoy") boolean reservasHoy);
 
     // Métodos para usuarios
     @GET("usuarios.php") // Obtener todos los usuarios

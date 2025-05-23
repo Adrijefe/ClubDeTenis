@@ -163,17 +163,54 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+
+        MenuItem menuUsuarios = menu.findItem(R.id.menu_usuarios);
+
+        Usuario loggedUser = preferenceManager.getUser(); // Obtener el usuario logueado
+
+        if (menuUsuarios != null) {
+            if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
+                menuUsuarios.setVisible(true);
+            } else {
+                menuUsuarios.setVisible(false);
+            }
+        }
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_logout) {
+        int id = item.getItemId();
+        Usuario loggedUser = preferenceManager.getUser();
+
+        if (id == R.id.menu_crear_reserva) {
+            startActivity(new Intent(this, CrearReservaActivity.class));
+            return true;
+        } else if (id == R.id.menu_pistas) {
+            startActivity(new Intent(this, PistasActivity.class));
+            return true;
+        } else if (id == R.id.menu_reservas) {
+            startActivity(new Intent(this, ReservasActivity.class));
+            return true;
+        } else if (id == R.id.menu_usuarios) {
+            if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
+                startActivity(new Intent(this, UsuariosActivity.class));
+            } else {
+                Toast.makeText(this, "No tienes permisos para acceder", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        } else if (id == R.id.menu_logout) {
             preferenceManager.clear();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
+
+
+
 }
+

@@ -18,8 +18,11 @@ import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Reserva;
 import com.example.clubdetenis.models.Usuario;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -73,14 +76,31 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         holder.tvHora.setText(String.format("%s - %s", reserva.getHoraInicio(), reserva.getHoraFin()));
         holder.tvEstado.setText(reserva.getEstado());
         holder.tvUsuarioNombre.setText(reserva.getUsuarioNombre());
-
-        // Mostrar el ID del usuario al lado del nombre
-        holder.tvUsuarioId.setText("ID: " + reserva.getUsuarioId() + "");
+        holder.tvUsuarioId.setText("ID: " + reserva.getUsuarioId());
 
         PreferenceManager preferenceManager = new PreferenceManager(context);
         Usuario usuarioActual = preferenceManager.getUser();
 
-        if ("Administrador".equals(usuarioActual.getPerfil()) || usuarioActual.getId() == reserva.getUsuarioId()) {
+        // Parsear fecha y hora de la reserva
+        boolean yaPasado = false;
+        try {
+            SimpleDateFormat sdfFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            // Concatenamos fecha y hora fin para comparar con la hora actual
+            String fechaHoraFinStr = reserva.getFecha() + " " + reserva.getHoraFin();
+            Date fechaHoraFin = sdfFecha.parse(fechaHoraFinStr);
+
+            Date ahora = new Date();
+
+            if (fechaHoraFin != null && fechaHoraFin.before(ahora)) {
+                yaPasado = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Por seguridad, si falla el parseo, dejamos visible el botón (o cambiar según prefieras)
+            yaPasado = false;
+        }
+
+        if ( ("Administrador".equals(usuarioActual.getPerfil()) || usuarioActual.getId() == reserva.getUsuarioId()) && !yaPasado ) {
             holder.btnEliminar.setVisibility(View.VISIBLE);
         } else {
             holder.btnEliminar.setVisibility(View.GONE);

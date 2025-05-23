@@ -1,10 +1,13 @@
-// PistasActivity.java
 package com.example.clubdetenis.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,7 +17,11 @@ import com.example.clubdetenis.R;
 import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Pista;
-
+import com.example.clubdetenis.activities.CrearReservaActivity; // Asegúrate de tener estas imports
+import com.example.clubdetenis.activities.ReservasActivity;
+import com.example.clubdetenis.activities.LoginActivity;
+import com.example.clubdetenis.Utils.PreferenceManager;
+import com.example.clubdetenis.models.Usuario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +34,17 @@ public class PistasActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PistasAdapter adapter;
     private List<Pista> pistaList = new ArrayList<>();
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pistas);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        preferenceManager = new PreferenceManager(this);
 
         recyclerView = findViewById(R.id.recyclerViewPistas);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -43,19 +56,15 @@ public class PistasActivity extends AppCompatActivity {
 
     private void loadPistas() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<PistaResponse> call = apiService.getPistas();  // Usamos PistasResponse aquí
+        Call<PistaResponse> call = apiService.getPistas();
 
-        call.enqueue(new Callback<PistaResponse>() {  // Cambiar a PistasResponse
+        call.enqueue(new Callback<PistaResponse>() {
             @Override
             public void onResponse(Call<PistaResponse> call, Response<PistaResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().isSuccess()) {  // Verificar si la respuesta es exitosa
-                        pistaList.clear();
-                        pistaList.addAll(response.body().getPistas());  // Obtener la lista de pistas
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(PistasActivity.this, "Error al cargar pistas", Toast.LENGTH_SHORT).show();
-                    }
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    pistaList.clear();
+                    pistaList.addAll(response.body().getPistas());
+                    adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(PistasActivity.this, "Error al cargar pistas", Toast.LENGTH_SHORT).show();
                 }
@@ -67,4 +76,55 @@ public class PistasActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+
+        MenuItem menuUsuarios = menu.findItem(R.id.menu_usuarios);
+
+        Usuario loggedUser = preferenceManager.getUser(); // Obtener el usuario logueado
+
+        if (menuUsuarios != null) {
+            if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
+                menuUsuarios.setVisible(true);
+            } else {
+                menuUsuarios.setVisible(false);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Usuario loggedUser = preferenceManager.getUser();
+
+        if (id == R.id.menu_crear_reserva) {
+            startActivity(new Intent(this, CrearReservaActivity.class));
+            return true;
+        } else if (id == R.id.menu_pistas) {
+            Toast.makeText(this, "Ya estás en Pistas", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.menu_reservas) {
+            startActivity(new Intent(this, ReservasActivity.class));
+            return true;
+        } else if (id == R.id.menu_usuarios) {
+            if (loggedUser != null && "Administrador".equals(((Usuario) loggedUser).getPerfil())) {
+                startActivity(new Intent(this, UsuariosActivity.class));
+            } else {
+                Toast.makeText(this, "No tienes permisos para acceder", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        } else if (id == R.id.menu_logout) {
+            preferenceManager.clear();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

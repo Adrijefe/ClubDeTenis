@@ -1,6 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
 
     <LinearLayout
@@ -8,25 +9,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Título de la actividad -->
-        <RelativeLayout
+        <!-- Toolbar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:padding="16dp"
-            android:background="@android:color/holo_blue_light"> <!-- Color de fondo en azul claro -->
-
-            <!-- Título de la actividad -->
-            <TextView
-                android:id="@+id/txtTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Reservar Pista"
-                android:textSize="26sp"
-                android:textColor="@android:color/white"
-                android:layout_centerInParent="true"
-                android:fontFamily="sans-serif-medium" />
-        </RelativeLayout>
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="Nueva Reserva"
+            app:titleTextColor="@android:color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         <!-- Selección de pista -->
         <TextView

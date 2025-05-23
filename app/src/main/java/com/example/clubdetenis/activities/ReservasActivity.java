@@ -1,12 +1,16 @@
 package com.example.clubdetenis.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +20,7 @@ import com.example.clubdetenis.Utils.PreferenceManager;
 import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Reserva;
+import com.example.clubdetenis.models.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -43,6 +48,10 @@ public class ReservasActivity extends AppCompatActivity implements SearchView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reservas);
 
+        // Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         preferenceManager = new PreferenceManager(this);
         int usuarioId = preferenceManager.getUser().getId();
 
@@ -52,7 +61,7 @@ public class ReservasActivity extends AppCompatActivity implements SearchView.On
         adapter = new ReservasAdapter(this, reservaList);
         recyclerView.setAdapter(adapter);
 
-        searchView = findViewById(R.id.searchView); // Asegúrate que exista en el layout
+        searchView = findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(this);
 
         loadReservas(usuarioId);
@@ -97,7 +106,7 @@ public class ReservasActivity extends AppCompatActivity implements SearchView.On
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return false;  // No hacemos nada al enviar
+        return false;
     }
 
     @Override
@@ -105,4 +114,55 @@ public class ReservasActivity extends AppCompatActivity implements SearchView.On
         adapter.filtrado(newText);
         return false;
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+
+        MenuItem menuUsuarios = menu.findItem(R.id.menu_usuarios);
+
+        Usuario loggedUser = preferenceManager.getUser(); // Obtener el usuario logueado
+
+        if (menuUsuarios != null) {
+            if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
+                menuUsuarios.setVisible(true);
+            } else {
+                menuUsuarios.setVisible(false);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Usuario loggedUser = preferenceManager.getUser();
+
+        if (id == R.id.menu_crear_reserva) {
+            startActivity(new Intent(this, CrearReservaActivity.class));
+            return true;
+        } else if (id == R.id.menu_pistas) {
+            startActivity(new Intent(this, PistasActivity.class));
+            return true;
+        } else if (id == R.id.menu_reservas) {
+            Toast.makeText(this, "Ya estás en Reservas", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.menu_usuarios) {
+            if (loggedUser != null && "Administrador".equals(((Usuario) loggedUser).getPerfil())) {
+                startActivity(new Intent(this, UsuariosActivity.class));
+            } else {
+                Toast.makeText(this, "No tienes permisos para acceder", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        } else if (id == R.id.menu_logout) {
+            preferenceManager.clear();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

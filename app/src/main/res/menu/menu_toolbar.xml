@@ -1,8 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_crear_reserva"
+        android:title="Crear reserva"
+        android:icon="@android:drawable/ic_input_add"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_pistas"
+        android:title="Pistas"
+        android:icon="@android:drawable/ic_menu_mapmode"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_reservas"
+        android:title="Reservas"
+        android:icon="@android:drawable/ic_menu_agenda"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_usuarios"
+        android:title="Usuarios"
+        android:icon="@android:drawable/ic_menu_manage"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/menu_logout"
         android:title="Cerrar sesión"
-        app:showAsAction="always" />
+        android:icon="@android:drawable/ic_lock_power_off"
+        app:showAsAction="never" />
 </menu>
