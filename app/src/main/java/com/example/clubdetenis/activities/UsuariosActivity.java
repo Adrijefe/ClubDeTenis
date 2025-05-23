@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;  // <-- Import del Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +45,8 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
     private UsuariosAdapter usuarioAdapter;
     private PreferenceManager preferenceManager;
 
+    private Toolbar toolbar;  // <-- Definimos el Toolbar
+
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,11 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
 
         // Inicializar preferenceManager para obtener usuario logueado
         preferenceManager = new PreferenceManager(this);
+
+        // Inicializar toolbar y configurarlo como ActionBar
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 
         apiService = ApiClient.getClient().create(ApiService.class);
 
@@ -197,7 +205,6 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
             return true;
         } else if (id == R.id.menu_usuarios) {
             if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
-
                 Toast.makeText(this, "Ya estás en Usuarios", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "No tienes permisos para acceder", Toast.LENGTH_SHORT).show();
