@@ -22,7 +22,7 @@
 
     <item
         android:id="@+id/menu_usuarios"
-        android:title="Usuarios"
+        android:title="Gestión Usuarios"
         android:icon="@android:drawable/ic_menu_manage"
         app:showAsAction="never" />
 

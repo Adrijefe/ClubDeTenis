@@ -244,7 +244,7 @@ public class CrearReservaActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.menu_usuarios) {
             if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
-                startActivity(new Intent(this, UsuariosActivity.class));
+                startActivity(new Intent(this, MenuUsuariosActivity.class));
             } else {
                 Toast.makeText(this, "No tienes permisos para acceder", Toast.LENGTH_SHORT).show();
             }

@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnListadoSocios"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Listado de socios"
-        android:layout_marginBottom="24dp" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Gestión Usuarios"
+        app:titleTextColor="@android:color/white"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <Button
-        android:id="@+id/btnGestionUsuarios"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gestión de usuarios" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
+
+        <Button
+            android:id="@+id/btnListadoSocios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Listado de socios"
+            android:layout_marginBottom="24dp" />
+
+        <Button
+            android:id="@+id/btnGestionUsuarios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gestión de usuarios" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -30,13 +30,13 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity registrada pero no como principal -->
+        <!-- MainActivity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ClubDeTenis" />
 
-        <!-- NUEVA: PistasActivity -->
+        <!-- Actividades existentes -->
         <activity
             android:name=".activities.PistasActivity"
             android:exported="true"
@@ -46,14 +46,28 @@
             android:name=".activities.ReservasActivity"
             android:exported="true"
             android:theme="@style/Theme.ClubDeTenis" />
+
         <activity
             android:name=".activities.CrearReservaActivity"
             android:exported="true"
             android:theme="@style/Theme.ClubDeTenis" />
+
         <activity
             android:name=".activities.UsuariosActivity"
             android:exported="true"
             android:theme="@style/Theme.ClubDeTenis" />
+
+        <!-- NUEVAS ACTIVIDADES -->
+        <activity
+            android:name=".activities.MenuUsuariosActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClubDeTenis" />
+
+        <activity
+            android:name=".activities.ListadoSociosActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClubDeTenis" />
+
     </application>
 
 </manifest>

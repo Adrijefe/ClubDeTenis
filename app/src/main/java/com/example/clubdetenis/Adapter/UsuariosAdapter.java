@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;  // Import para botón
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,33 +26,24 @@ import retrofit2.Response;
 public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.UsuarioViewHolder> {
 
     private Context context;
-    List<Usuario> usuariosList;
-    List<Usuario> usuariosListFull;  // Lista completa para realizar la búsqueda
+    private List<Usuario> usuariosList;
+    private List<Usuario> usuariosListFull;
+    private boolean mostrarBotonEliminar;
+    private boolean mostrarTelefono;
 
-    public UsuariosAdapter(Context context, List<Usuario> usuariosList) {
+    public UsuariosAdapter(Context context, List<Usuario> usuariosList, boolean mostrarBotonEliminar, boolean mostrarTelefono) {
         this.context = context;
         this.usuariosList = usuariosList;
         this.usuariosListFull = new ArrayList<>();
-        usuariosListFull.addAll(usuariosList);
+        this.usuariosListFull.addAll(usuariosList);
+        this.mostrarBotonEliminar = mostrarBotonEliminar;
+        this.mostrarTelefono = mostrarTelefono;
     }
 
     @Override
     public UsuarioViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_usuario, parent, false);
         return new UsuarioViewHolder(view);
-    }
-
-    public void filtrado(final String text) {
-        int textLength = text.length();
-        if (textLength == 0) {
-            usuariosList.clear();
-            usuariosList.addAll(usuariosListFull);  // ← CORREGIDO
-        } else {
-            List<Usuario> coleccion = usuariosList.stream().filter(i -> i.getNombre().toLowerCase().contains(text.toLowerCase())).collect(Collectors.toList());
-            usuariosList.clear();
-            usuariosList.addAll(coleccion);
-        }
-        notifyDataSetChanged();
     }
 
     @Override
@@ -62,20 +53,25 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         holder.nombre.setText(usuario.getNombre());
         holder.email.setText(usuario.getEmail());
 
-        // Mostrar botón eliminar siempre (puedes agregar lógica según perfil)
-        holder.btnEliminar.setVisibility(View.VISIBLE);
+        if (mostrarTelefono) {
+            holder.telefono.setText(usuario.getTelefono());
+            holder.telefono.setVisibility(View.VISIBLE);
+        } else {
+            holder.telefono.setVisibility(View.GONE);
+        }
 
-        holder.btnEliminar.setOnClickListener(v -> {
-            int positionToRemove = holder.getAdapterPosition();
-            if (positionToRemove != RecyclerView.NO_POSITION) {
-                eliminarUsuario(positionToRemove);
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return usuariosList.size();
+        if (mostrarBotonEliminar) {
+            holder.btnEliminar.setVisibility(View.VISIBLE);
+            holder.btnEliminar.setOnClickListener(v -> {
+                int positionToRemove = holder.getAdapterPosition();
+                if (positionToRemove != RecyclerView.NO_POSITION) {
+                    eliminarUsuario(positionToRemove);
+                }
+            });
+        } else {
+            holder.btnEliminar.setVisibility(View.GONE);
+            holder.btnEliminar.setOnClickListener(null);
+        }
     }
 
     private void eliminarUsuario(int position) {
@@ -111,17 +107,37 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         notifyDataSetChanged();
     }
 
+    public void filtrado(final String text) {
+        if (text.isEmpty()) {
+            usuariosList.clear();
+            usuariosList.addAll(usuariosListFull);
+        } else {
+            List<Usuario> filtrados = usuariosListFull.stream()
+                    .filter(u -> u.getNombre().toLowerCase().contains(text.toLowerCase()))
+                    .collect(Collectors.toList());
+            usuariosList.clear();
+            usuariosList.addAll(filtrados);
+        }
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemCount() {
+        return usuariosList.size();
+    }
+
     public static class UsuarioViewHolder extends RecyclerView.ViewHolder {
 
-        TextView id, nombre, email;
-        Button btnEliminar;  // Botón eliminar
+        TextView id, nombre, email, telefono;
+        Button btnEliminar;
 
         public UsuarioViewHolder(View itemView) {
             super(itemView);
             id = itemView.findViewById(R.id.tvId);
             nombre = itemView.findViewById(R.id.tvNombre);
             email = itemView.findViewById(R.id.etEmail);
-            btnEliminar = itemView.findViewById(R.id.btnEliminar);  // Inicializar botón
+            telefono = itemView.findViewById(R.id.tvTelefono);
+            btnEliminar = itemView.findViewById(R.id.btnEliminar);
         }
     }
 }

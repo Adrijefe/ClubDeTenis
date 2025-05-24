@@ -18,6 +18,7 @@ import com.example.clubdetenis.Adapter.ReservasAdapter;
 import com.example.clubdetenis.Utils.PreferenceManager;
 import com.example.clubdetenis.activities.CrearReservaActivity;
 import com.example.clubdetenis.activities.LoginActivity;
+import com.example.clubdetenis.activities.MenuUsuariosActivity;
 import com.example.clubdetenis.activities.PistasActivity;
 import com.example.clubdetenis.activities.ReservasActivity;
 import com.example.clubdetenis.activities.UsuariosActivity;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         btnPistas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, PistasActivity.class)));
         btnReservas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ReservasActivity.class)));
         btnReservar.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CrearReservaActivity.class)));
-        btnUsuarios.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, UsuariosActivity.class)));
+        btnUsuarios.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MenuUsuariosActivity.class)));
 
         Usuario loggedUser = preferenceManager.getUser();
         if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
@@ -195,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.menu_usuarios) {
             if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
-                startActivity(new Intent(this, UsuariosActivity.class));
+                startActivity(new Intent(this, MenuUsuariosActivity.class));
             } else {
                 Toast.makeText(this, "No tienes permisos para acceder", Toast.LENGTH_SHORT).show();
             }

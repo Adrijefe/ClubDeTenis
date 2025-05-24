@@ -6,24 +6,29 @@ public class Usuario {
     private int id;
     private String nombre;
     private String email;
-    private String perfil;  // Nuevo campo para almacenar el perfil del usuario
+    private String perfil;
+    private String telefono;  // Nuevo campo teléfono
 
-    // Constructor actualizado para aceptar perfil
-    public Usuario(int id, String nombre, String email, String perfil) {
+    // Constructor actualizado para aceptar perfil y teléfono
+    public Usuario(int id, String nombre, String email, String perfil, String telefono) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
-        this.perfil = perfil;  // Asignamos el perfil directamente
+        this.perfil = perfil;
+        this.telefono = telefono;
     }
 
-    // Getters y Setters
+    // Getters
     public int getId() { return id; }
     public String getNombre() { return nombre; }
     public String getEmail() { return email; }
-    public String getPerfil() { return perfil; }  // Obtener el perfil del usuario
+    public String getPerfil() { return perfil; }
+    public String getTelefono() { return telefono; }  // Getter teléfono
 
+    // Setters
     public void setId(int id) { this.id = id; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setEmail(String email) { this.email = email; }
-    public void setPerfil(String perfil) { this.perfil = perfil; }  // Establecer el perfil del usuario
+    public void setPerfil(String perfil) { this.perfil = perfil; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }  // Setter teléfono
 }

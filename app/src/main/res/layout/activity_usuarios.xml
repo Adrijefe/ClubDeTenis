@@ -17,15 +17,6 @@
         app:titleTextColor="@android:color/white"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         <!-- Título de la actividad -->
-        <TextView
-            android:id="@+id/txtTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gestión Usuarios"
-            android:textSize="26sp"
-            android:textColor="@android:color/white"
-            android:layout_centerInParent="true"
-            android:fontFamily="sans-serif-medium" />
 
     <EditText
         android:id="@+id/etNombre"

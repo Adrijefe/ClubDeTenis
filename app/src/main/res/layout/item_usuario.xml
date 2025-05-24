@@ -34,6 +34,11 @@
         android:textSize="14sp"
         android:layout_weight="1"
         android:layout_marginEnd="8dp" />
+    <TextView
+        android:id="@+id/tvTelefono"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"/>
 
     <!-- Botón de eliminar -->
     <Button
