@@ -112,14 +112,18 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
             usuariosList.clear();
             usuariosList.addAll(usuariosListFull);
         } else {
+            String textoLower = text.toLowerCase();
             List<Usuario> filtrados = usuariosListFull.stream()
-                    .filter(u -> u.getNombre().toLowerCase().contains(text.toLowerCase()))
+                    .filter(u -> u.getNombre().toLowerCase().contains(textoLower)
+                            || (u.getTelefono() != null && u.getTelefono().toLowerCase().contains(textoLower))
+                            || (u.getEmail() != null && u.getEmail().toLowerCase().contains(textoLower)))
                     .collect(Collectors.toList());
             usuariosList.clear();
             usuariosList.addAll(filtrados);
         }
         notifyDataSetChanged();
     }
+
 
     @Override
     public int getItemCount() {

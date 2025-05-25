@@ -49,17 +49,21 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
     }
 
     public void filtrado(final String text) {
-        int textLength = text.length();
-        if (textLength == 0) {
+        if (text.isEmpty()) {
             reservaList.clear();
-            reservaList.addAll(reservaListFull);  // ← CORREGIDO
+            reservaList.addAll(reservaListFull);
         } else {
-            List<Reserva> coleccion = reservaList.stream().filter(i -> i.getUsuarioNombre().toLowerCase().contains(text.toLowerCase())).collect(Collectors.toList());
+            String textoLower = text.toLowerCase();
+            List<Reserva> filtrados = reservaListFull.stream()
+                    .filter(r -> r.getUsuarioNombre().toLowerCase().contains(textoLower)
+                            || r.getFecha().startsWith(textoLower))
+                    .collect(Collectors.toList());
             reservaList.clear();
-            reservaList.addAll(coleccion);
+            reservaList.addAll(filtrados);
         }
         notifyDataSetChanged();
     }
+
     public void setReserva(List<Reserva> nuevasReservas) {
         reservaList.clear();
         reservaList.addAll(nuevasReservas);
@@ -96,11 +100,10 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Por seguridad, si falla el parseo, dejamos visible el botón (o cambiar según prefieras)
             yaPasado = false;
         }
 
-        if ( ("Administrador".equals(usuarioActual.getPerfil()) || usuarioActual.getId() == reserva.getUsuarioId()) && !yaPasado ) {
+        if (("Administrador".equals(usuarioActual.getPerfil()) || usuarioActual.getId() == reserva.getUsuarioId()) && !yaPasado) {
             holder.btnEliminar.setVisibility(View.VISIBLE);
         } else {
             holder.btnEliminar.setVisibility(View.GONE);
@@ -161,7 +164,7 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
             tvHora = itemView.findViewById(R.id.tvHora);
             tvEstado = itemView.findViewById(R.id.tvEstado);
             tvUsuarioNombre = itemView.findViewById(R.id.tvUsuarioNombre);
-            tvUsuarioId = itemView.findViewById(R.id.tvUsuarioId);  // Nuevo TextView para el ID
+            tvUsuarioId = itemView.findViewById(R.id.tvUsuarioId);
             btnEliminar = itemView.findViewById(R.id.btnEliminar);
         }
     }
