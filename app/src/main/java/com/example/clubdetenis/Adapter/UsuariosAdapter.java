@@ -30,8 +30,9 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
     private List<Usuario> usuariosListFull;
     private boolean mostrarBotonEliminar;
     private boolean mostrarTelefono;
-
+// Constructor
     public UsuariosAdapter(Context context, List<Usuario> usuariosList, boolean mostrarBotonEliminar, boolean mostrarTelefono) {
+
         this.context = context;
         this.usuariosList = usuariosList;
         this.usuariosListFull = new ArrayList<>();
@@ -39,13 +40,13 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         this.mostrarBotonEliminar = mostrarBotonEliminar;
         this.mostrarTelefono = mostrarTelefono;
     }
-
+    // Infla el layout de cada ítem de usuario y crea el ViewHolder
     @Override
     public UsuarioViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_usuario, parent, false);
         return new UsuarioViewHolder(view);
     }
-
+    // Asocia los datos del usuario a las vistas y configura visibilidad y eventos del botón eliminar y teléfono
     @Override
     public void onBindViewHolder(UsuarioViewHolder holder, int position) {
         Usuario usuario = usuariosList.get(position);
@@ -73,7 +74,7 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
             holder.btnEliminar.setOnClickListener(null);
         }
     }
-
+    // Elimina un usuario llamando a la API y actualiza la lista en caso de éxito o muestra error
     private void eliminarUsuario(int position) {
         Usuario usuarioAEliminar = usuariosList.get(position);
 
@@ -98,7 +99,7 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
             }
         });
     }
-
+    // Actualiza la lista completa de usuarios y refresca la vista del RecyclerView
     public void setUsuarios(List<Usuario> nuevosUsuarios) {
         usuariosList.clear();
         usuariosList.addAll(nuevosUsuarios);
@@ -106,7 +107,7 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         usuariosListFull.addAll(nuevosUsuarios);
         notifyDataSetChanged();
     }
-
+    // Filtra la lista de usuarios por nombre, teléfono o email y actualiza la vista
     public void filtrado(final String text) {
         if (text.isEmpty()) {
             usuariosList.clear();
@@ -123,19 +124,19 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         }
         notifyDataSetChanged();
     }
-
-
+    // Devuelve el número total de usuarios mostrados en la lista
     @Override
     public int getItemCount() {
         return usuariosList.size();
     }
-
+// mantiene las referencias a las vistas de cada ítem (id, nombre, email, teléfono y botón eliminar)
     public static class UsuarioViewHolder extends RecyclerView.ViewHolder {
 
         TextView id, nombre, email, telefono;
         Button btnEliminar;
 
         public UsuarioViewHolder(View itemView) {
+            // Constructor que vincula vistas (TextViews, Button) con variables para usarlas en onBindViewHolder
             super(itemView);
             id = itemView.findViewById(R.id.tvId);
             nombre = itemView.findViewById(R.id.tvNombre);

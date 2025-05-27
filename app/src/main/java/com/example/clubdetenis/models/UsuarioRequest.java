@@ -1,5 +1,5 @@
 package com.example.clubdetenis.models;
-
+//  sirve para representar los datos que se envían cuando se crea o actualiza un usuario
 public class UsuarioRequest {
     private String nombre;
     private String email;

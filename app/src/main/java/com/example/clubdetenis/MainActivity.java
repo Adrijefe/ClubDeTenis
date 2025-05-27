@@ -21,7 +21,6 @@ import com.example.clubdetenis.activities.LoginActivity;
 import com.example.clubdetenis.activities.MenuUsuariosActivity;
 import com.example.clubdetenis.activities.PistasActivity;
 import com.example.clubdetenis.activities.ReservasActivity;
-import com.example.clubdetenis.activities.UsuariosActivity;
 import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Reserva;
@@ -50,21 +49,23 @@ public class MainActivity extends AppCompatActivity {
     private ReservasAdapter adapter;
     private List<Reserva> reservaList = new ArrayList<>();
 
-    private TextView tvReservasHoy;  // <-- Añadido
+    private TextView tvReservasHoy;
 
+    // Inicializa la actividad, configura UI y carga reservas si el usuario está logueado
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         preferenceManager = new PreferenceManager(this);
+
+        // Si no está logueado, lo envia a LoginActivity
         if (!preferenceManager.isLoggedIn()) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
             return;
         }
 
-        // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -73,12 +74,15 @@ public class MainActivity extends AppCompatActivity {
         btnReservar = findViewById(R.id.btnNuevaReserva);
         btnUsuarios = findViewById(R.id.btnUsuarios);
 
+        // Navegación a distintas actividades
         btnPistas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, PistasActivity.class)));
         btnReservas.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ReservasActivity.class)));
         btnReservar.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CrearReservaActivity.class)));
         btnUsuarios.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MenuUsuariosActivity.class)));
 
         Usuario loggedUser = preferenceManager.getUser();
+
+        // Mostrar el botón Usuarios solo si el perfil es Administrador
         if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
             btnUsuarios.setVisibility(android.view.View.VISIBLE);
         } else {
@@ -90,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ReservasAdapter(this, reservaList);
         recyclerView.setAdapter(adapter);
 
-        // Referencia el TextView y actualiza la fecha aquí
+        // Mostrar fecha actual en el TextView
         tvReservasHoy = findViewById(R.id.tvReservasHoy);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String fechaActual = sdf.format(new Date());
@@ -99,12 +103,14 @@ public class MainActivity extends AppCompatActivity {
         loadProximasReservas();
     }
 
+    // Recarga las reservas al volver a la actividad
     @Override
     protected void onResume() {
         super.onResume();
         loadProximasReservas();
     }
 
+    // Obtiene las reservas del usuario desde la API y actualiza la lista con las reservas de hoy
     private void loadProximasReservas() {
         int usuarioId = preferenceManager.getUser().getId();
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
@@ -122,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                         Type listType = new TypeToken<List<Reserva>>() {}.getType();
                         List<Reserva> todasReservas = gson.fromJson(reservasJson, listType);
 
+                        // Filtra solo las reservas de hoy
                         List<Reserva> reservasHoy = filtrarReservasHoy(todasReservas);
 
                         if (reservasHoy.isEmpty()) {
@@ -147,28 +154,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Filtra una lista de reservas para obtener solo las reservas de la fecha actual
     private List<Reserva> filtrarReservasHoy(List<Reserva> todasReservas) {
         List<Reserva> reservasHoy = new ArrayList<>();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String fechaHoy = formatoFecha.format(new Date());
 
         for (Reserva reserva : todasReservas) {
+            // Compara la fecha de la reserva con la fecha actual
             if (reserva.getFecha().equals(fechaHoy)) {
                 reservasHoy.add(reserva);
             }
         }
         return reservasHoy;
+    }
 
-}
-
+    // Infla el menú y muestra o oculta la opción Usuarios según el perfil del usuario que tenga
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
 
         MenuItem menuUsuarios = menu.findItem(R.id.menu_usuarios);
+        Usuario loggedUser = preferenceManager.getUser();
 
-        Usuario loggedUser = preferenceManager.getUser(); // Obtener el usuario logueado
-
+        // Mostrar menú Usuarios solo a administradores
         if (menuUsuarios != null) {
             if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
                 menuUsuarios.setVisible(true);
@@ -180,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // Gestiona las acciones de los elementos del menú, navegando o cerrando sesión
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -188,20 +198,26 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.menu_crear_reserva) {
             startActivity(new Intent(this, CrearReservaActivity.class));
             return true;
-        } else if (id == R.id.menu_pistas) {
+        }
+        else if (id == R.id.menu_pistas) {
             startActivity(new Intent(this, PistasActivity.class));
             return true;
-        } else if (id == R.id.menu_reservas) {
+        }
+        else if (id == R.id.menu_reservas) {
             startActivity(new Intent(this, ReservasActivity.class));
             return true;
-        } else if (id == R.id.menu_usuarios) {
+        }
+        else if (id == R.id.menu_usuarios) {
+            // Acceso solo para administradores
             if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
                 startActivity(new Intent(this, MenuUsuariosActivity.class));
             } else {
                 Toast.makeText(this, "No tienes permisos para acceder", Toast.LENGTH_SHORT).show();
             }
             return true;
-        } else if (id == R.id.menu_logout) {
+        }
+        else if (id == R.id.menu_logout) {
+            // Limpiar sesión y volver al login
             preferenceManager.clear();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -210,8 +226,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
 }
-

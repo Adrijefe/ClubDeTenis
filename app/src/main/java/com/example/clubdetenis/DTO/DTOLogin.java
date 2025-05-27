@@ -1,5 +1,5 @@
 package com.example.clubdetenis.DTO;
-
+// almacenamos la información del inicio de sesión y lo cogemos a traves de retrofit
 public class DTOLogin {
     private String email;
     private String password;
@@ -10,7 +10,7 @@ public class DTOLogin {
         this.password = password;
     }
 
-    // Getters y Setters (necesarios para Retrofit)
+    // Getters y Setters
     public String getEmail() {
         return email;
     }

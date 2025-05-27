@@ -32,6 +32,7 @@ import retrofit2.Response;
 
 public class UsuariosActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
+    // Declaramos los componentes
     private RecyclerView recyclerViewUsuarios;
     private Button btnAñadirUsuario;
     private EditText etNombre, etEmail, etPassword, etTelefono;
@@ -43,22 +44,22 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
 
     private Toolbar toolbar;
 
-    @SuppressLint({"MissingInflatedId", "WrongViewCast"})
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usuarios);
 
+        // Configuración del Toolbar con botón de volver
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Gestión de Usuarios");
         }
 
+        // Inicialización del servicio de API
         apiService = ApiClient.getClient().create(ApiService.class);
 
+        // Referencias a elementos del layout
         recyclerViewUsuarios = findViewById(R.id.recyclerUsuarios);
         btnAñadirUsuario = findViewById(R.id.btnAñadirUsuario);
         etNombre = findViewById(R.id.etNombre);
@@ -68,27 +69,33 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
         etPerfil = findViewById(R.id.spinnerPerfil);
         txtBuscar = findViewById(R.id.searchView);
 
+        // Configuración del spinner de perfil (Administrador/Socio)
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.perfiles_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         etPerfil.setAdapter(adapter);
 
+        // Configuración del RecyclerView
         recyclerViewUsuarios.setLayoutManager(new LinearLayoutManager(this));
-        // Aquí: botón eliminar visible (true), teléfono oculto (false)
+        // El adaptador muestra botón de eliminar (true) y oculta teléfono (false)
+        // para que no aparezca en la lista de la gestion de usuarios
         usuarioAdapter = new UsuariosAdapter(this, new ArrayList<>(), true, false);
         recyclerViewUsuarios.setAdapter(usuarioAdapter);
 
+        // Carga de usuarios desde la API
         loadUsuarios();
 
+        // Acción al hacer clic en Añadir Usuario
         btnAñadirUsuario.setOnClickListener(v -> {
             boolean valido = true;
-
+            // Obtención de valores ingresados
             String nombre = etNombre.getText().toString().trim();
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
             String telefono = etTelefono.getText().toString().trim();
             String perfil = etPerfil.getSelectedItem().toString().trim();
 
+            // Validación de campos obligatorios
             if (nombre.isEmpty()) {
                 etNombre.setError("Este campo es obligatorio");
                 valido = false;
@@ -107,16 +114,18 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
             }
 
             if (valido) {
-                int esSocio = 1; // Ajusta si es necesario según tu lógica
+                int esSocio = 1; // Puedes ajustar esto según la lógica de tu app
                 addUsuario(nombre, email, password, telefono, esSocio, perfil);
             } else {
                 Toast.makeText(this, "Por favor, complete los campos marcados", Toast.LENGTH_SHORT).show();
             }
         });
 
+        // Escucha cambios en el campo de búsqueda
         txtBuscar.setOnQueryTextListener(this);
     }
 
+    // Cargar usuarios desde la API y mostrarlos en el RecyclerView
     private void loadUsuarios() {
         apiService.getUsuarios().enqueue(new Callback<List<Usuario>>() {
             @Override
@@ -135,6 +144,7 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
         });
     }
 
+    // Lógica para enviar un nuevo usuario a la API
     private void addUsuario(String nombre, String email, String password, String telefono, int esSocio, String perfil) {
         UsuarioRequest usuarioRequest = new UsuarioRequest(nombre, email, password, telefono, esSocio, perfil);
 
@@ -144,7 +154,7 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(UsuariosActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     if (response.body().isSuccess()) {
-                        loadUsuarios();
+                        loadUsuarios(); // Recargar lista si fue exitoso
                     }
                 }
             }
@@ -156,22 +166,23 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
         });
     }
 
+    // Métodos del SearchView para filtrar resultados
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return false;
+        return false; // No hacemos nada al enviar búsqueda
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        usuarioAdapter.filtrado(newText);
+        usuarioAdapter.filtrado(newText); // Filtrar en tiempo real
         return false;
     }
 
-    // Flecha "volver"
+    // Flecha "volver" del Toolbar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            finish(); // Cierra la actividad
             return true;
         }
         return super.onOptionsItemSelected(item);

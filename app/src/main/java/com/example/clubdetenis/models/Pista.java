@@ -1,7 +1,7 @@
 package com.example.clubdetenis.models;
 
 import com.google.gson.annotations.SerializedName;
-
+// sirve para mirar la informacion de las pistas
 public class Pista {
     private int id;
     private String nombre;

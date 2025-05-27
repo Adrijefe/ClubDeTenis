@@ -31,9 +31,10 @@ import retrofit2.Response;
 
 public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.ReservaViewHolder> {
     private Context context;
-    private List<Reserva> reservaList;
-    private List<Reserva> reservaListFull;
+    private List<Reserva> reservaList;        // Lista que contiene las reservas que se muestran
+    private List<Reserva> reservaListFull;    // Lista completa para restaurar después de filtrar
 
+    // Constructor inicializa contexto y las listas (la copia completa para el filtrado)
     public ReservasAdapter(Context context, List<Reserva> reservaList) {
         this.context = context;
         this.reservaList = reservaList;
@@ -44,15 +45,19 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
     @NonNull
     @Override
     public ReservaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Infla el layout del ítem reserva para usarlo en cada ViewHolder
         View view = LayoutInflater.from(context).inflate(R.layout.item_reserva, parent, false);
         return new ReservaViewHolder(view);
     }
 
+    // Método para filtrar la lista de reservas por texto en nombre de usuario o fecha
     public void filtrado(final String text) {
         if (text.isEmpty()) {
+            // Si el texto está vacío, muestra toda la lista original
             reservaList.clear();
             reservaList.addAll(reservaListFull);
         } else {
+            // Filtra la lista por coincidencia en usuarioNombre o que la fecha empiece con el texto
             String textoLower = text.toLowerCase();
             List<Reserva> filtrados = reservaListFull.stream()
                     .filter(r -> r.getUsuarioNombre().toLowerCase().contains(textoLower)
@@ -61,9 +66,10 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
             reservaList.clear();
             reservaList.addAll(filtrados);
         }
-        notifyDataSetChanged();
+        notifyDataSetChanged(); // Notifica cambios para actualizar la vista
     }
 
+    // Actualiza la lista de reservas con una nueva lista por ejemplo, tras obtener datos nuevos
     public void setReserva(List<Reserva> nuevasReservas) {
         reservaList.clear();
         reservaList.addAll(nuevasReservas);
@@ -72,6 +78,7 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         notifyDataSetChanged();
     }
 
+    // Asocia datos de la reserva con las vistas del ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ReservaViewHolder holder, int position) {
         Reserva reserva = reservaList.get(position);
@@ -82,33 +89,33 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         holder.tvUsuarioNombre.setText(reserva.getUsuarioNombre());
         holder.tvUsuarioId.setText("ID: " + reserva.getUsuarioId());
 
+        // Obtiene el usuario actual desde las preferencias para controlar visibilidad de botón eliminar
         PreferenceManager preferenceManager = new PreferenceManager(context);
         Usuario usuarioActual = preferenceManager.getUser();
 
-        // Parsear fecha y hora de la reserva
+        // Verifica si la reserva ya ha pasodo comparando fecha y hora fin con la fecha actual
         boolean yaPasado = false;
         try {
             SimpleDateFormat sdfFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-            // Concatenamos fecha y hora fin para comparar con la hora actual
             String fechaHoraFinStr = reserva.getFecha() + " " + reserva.getHoraFin();
             Date fechaHoraFin = sdfFecha.parse(fechaHoraFinStr);
-
             Date ahora = new Date();
-
             if (fechaHoraFin != null && fechaHoraFin.before(ahora)) {
                 yaPasado = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            yaPasado = false;
+            yaPasado = false; // En caso de error no bloquea botón eliminar
         }
 
+        // Muestra botón eliminar solo si es administrador o dueño de la reserva y la reserva no ha pasado
         if (("Administrador".equals(usuarioActual.getPerfil()) || usuarioActual.getId() == reserva.getUsuarioId()) && !yaPasado) {
             holder.btnEliminar.setVisibility(View.VISIBLE);
         } else {
             holder.btnEliminar.setVisibility(View.GONE);
         }
 
+        // Listener para eliminar la reserva cuando se pulsa el botón
         holder.btnEliminar.setOnClickListener(v -> {
             int positionToRemove = holder.getAdapterPosition();
             if (positionToRemove != RecyclerView.NO_POSITION) {
@@ -119,15 +126,18 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
 
     @Override
     public int getItemCount() {
+        // Retorna el número de reservas visibles
         return reservaList.size();
     }
 
+    // Actualiza la lista de reservas y notifica cambios es como un metodo auxiliar mas o menos
     public void updateData(List<Reserva> newReservaList) {
         this.reservaList.clear();
         this.reservaList.addAll(newReservaList);
         notifyDataSetChanged();
     }
 
+    // Método  para eliminar reserva de la API y actualizar la lista
     private void eliminarReserva(int position) {
         Reserva reservaAEliminar = reservaList.get(position);
 
@@ -138,8 +148,8 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    reservaList.remove(position);
-                    notifyItemRemoved(position);
+                    reservaList.remove(position);      // Elimina reserva de la lista local
+                    notifyItemRemoved(position);       // Notifica RecyclerView
                     Toast.makeText(context, "Reserva eliminada exitosamente", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "Error al eliminar la reserva", Toast.LENGTH_SHORT).show();
@@ -153,6 +163,7 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         });
     }
 
+    // Clase ViewHolder que mantiene referencias a las vistas del layout para cada reserva
     public static class ReservaViewHolder extends RecyclerView.ViewHolder {
         TextView tvPista, tvFecha, tvHora, tvEstado, tvUsuarioNombre, tvUsuarioId;
         Button btnEliminar;

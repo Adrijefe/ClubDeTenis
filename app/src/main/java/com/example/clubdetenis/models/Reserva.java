@@ -1,14 +1,14 @@
 package com.example.clubdetenis.models;
 
 import com.google.gson.annotations.SerializedName;
-
+// y esta representa una reserva concreta ya esta creada
 public class Reserva {
     private int id;
 
     @SerializedName("usuario_id")
     private int usuarioId;
 
-    @SerializedName("usuario_nombre")  // Campo para almacenar el nombre del usuario
+    @SerializedName("usuario_nombre")
     private String usuarioNombre;
 
     private int pistaId;

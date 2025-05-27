@@ -11,6 +11,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.clubdetenis.databinding.FragmentSecondBinding;
 
+//No he tocado nada de nada
+
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;

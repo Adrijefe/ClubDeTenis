@@ -1,7 +1,6 @@
 package com.example.clubdetenis.models;
 
-import com.google.gson.annotations.SerializedName;
-
+// y con este lo que hacemos es acceder al Usuario
 public class Usuario {
     private int id;
     private String nombre;
@@ -23,12 +22,12 @@ public class Usuario {
     public String getNombre() { return nombre; }
     public String getEmail() { return email; }
     public String getPerfil() { return perfil; }
-    public String getTelefono() { return telefono; }  // Getter teléfono
+    public String getTelefono() { return telefono; }
 
     // Setters
     public void setId(int id) { this.id = id; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setEmail(String email) { this.email = email; }
     public void setPerfil(String perfil) { this.perfil = perfil; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }  // Setter teléfono
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 }

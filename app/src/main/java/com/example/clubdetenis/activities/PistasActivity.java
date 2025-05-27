@@ -17,9 +17,6 @@ import com.example.clubdetenis.R;
 import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Pista;
-import com.example.clubdetenis.activities.CrearReservaActivity; // Asegúrate de tener estas imports
-import com.example.clubdetenis.activities.ReservasActivity;
-import com.example.clubdetenis.activities.LoginActivity;
 import com.example.clubdetenis.Utils.PreferenceManager;
 import com.example.clubdetenis.models.Usuario;
 
@@ -48,15 +45,20 @@ public class PistasActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewPistas);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Establece el layout para mostrar las pistas en lista
+
         adapter = new PistasAdapter(this, pistaList);
         recyclerView.setAdapter(adapter);
+        // Asigna el adaptador al RecyclerView para mostrar datos
 
         loadPistas();
+        // Carga las pistas desde la API para mostrarlas en la lista
     }
 
     private void loadPistas() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         Call<PistaResponse> call = apiService.getPistas();
+        // Llama al endpoint para obtener la lista de pistas
 
         call.enqueue(new Callback<PistaResponse>() {
             @Override
@@ -65,6 +67,7 @@ public class PistasActivity extends AppCompatActivity {
                     pistaList.clear();
                     pistaList.addAll(response.body().getPistas());
                     adapter.notifyDataSetChanged();
+                    // Actualiza el adaptador para que muestre los datos recién recibidos
                 } else {
                     Toast.makeText(PistasActivity.this, "Error al cargar pistas", Toast.LENGTH_SHORT).show();
                 }
@@ -83,11 +86,12 @@ public class PistasActivity extends AppCompatActivity {
 
         MenuItem menuUsuarios = menu.findItem(R.id.menu_usuarios);
 
-        Usuario loggedUser = preferenceManager.getUser(); // Obtener el usuario logueado
+        Usuario loggedUser = preferenceManager.getUser(); // Obtiene usuario logueado para control de acceso
 
         if (menuUsuarios != null) {
             if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
                 menuUsuarios.setVisible(true);
+                // Solo muestra el menú usuarios si el perfil es Administrador
             } else {
                 menuUsuarios.setVisible(false);
             }
@@ -111,7 +115,7 @@ public class PistasActivity extends AppCompatActivity {
             startActivity(new Intent(this, ReservasActivity.class));
             return true;
         } else if (id == R.id.menu_usuarios) {
-            if (loggedUser != null && "Administrador".equals(((Usuario) loggedUser).getPerfil())) {
+            if (loggedUser != null && "Administrador".equals(loggedUser.getPerfil())) {
                 startActivity(new Intent(this, UsuariosActivity.class));
             } else {
                 Toast.makeText(this, "No tienes permisos para acceder", Toast.LENGTH_SHORT).show();
@@ -119,12 +123,12 @@ public class PistasActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.menu_logout) {
             preferenceManager.clear();
+            // Limpia datos guardados localmente para cerrar sesión
             startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            finish(); // Cierra esta actividad para evitar volver atrás
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 }
