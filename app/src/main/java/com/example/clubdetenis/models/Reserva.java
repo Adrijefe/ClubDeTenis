@@ -5,24 +5,24 @@ import com.google.gson.annotations.SerializedName;
 public class Reserva {
     private int id;
 
-    @SerializedName("usuario_id")
+    @SerializedName("usuarioId")
     private int usuarioId;
 
-    @SerializedName("usuario_nombre")
+    @SerializedName("usuarioNombre")
     private String usuarioNombre;
-
+    @SerializedName("pista_id")
     private int pistaId;
     private String fecha;
 
-    @SerializedName("hora_inicio")
+    @SerializedName("horaInicio")
     private String horaInicio;
 
-    @SerializedName("hora_fin")
+    @SerializedName("horaFin")
     private String horaFin;
 
     private String estado;
 
-    @SerializedName("pista_nombre")
+    @SerializedName("pistaNombre")
     private String pistaNombre;
 
     // Constructor con el campo usuarioNombre

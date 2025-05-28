@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.clubdetenis.PistaResponse;
 import com.example.clubdetenis.R;
 import com.example.clubdetenis.Utils.PreferenceManager;
 import com.example.clubdetenis.api.ApiClient;
@@ -22,12 +23,7 @@ import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Pista;
 import com.example.clubdetenis.models.ReservaRequest;
 import com.example.clubdetenis.models.Usuario;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,37 +83,35 @@ public class CrearReservaActivity extends AppCompatActivity {
 
         btnReservar.setOnClickListener(v -> crearReserva(usuarioId));
     }
-
     private void cargarPistas() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        apiService.getPistasDisponibles().enqueue(new Callback<JsonObject>() {
+        apiService.getPistasDisponibles().enqueue(new Callback<PistaResponse>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(Call<PistaResponse> call, Response<PistaResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        JsonObject json = response.body();
-                        JsonArray pistasJson = json.getAsJsonArray("pistas");
+                    PistaResponse pistasResponse = response.body();
 
-                        Gson gson = new Gson();
-                        Type listType = new TypeToken<List<Pista>>(){}.getType();
-                        pistas = gson.fromJson(pistasJson, listType);
-
+                    if (pistasResponse.isSuccess()) {
+                        pistas = pistasResponse.getPistas();
                         ArrayAdapter<Pista> adapter = new ArrayAdapter<>(CrearReservaActivity.this,
                                 android.R.layout.simple_spinner_item, pistas);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinnerPistas.setAdapter(adapter);
-                    } catch (Exception e) {
-                        Toast.makeText(CrearReservaActivity.this, "Error al cargar pistas", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(CrearReservaActivity.this, "No hay pistas disponibles", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(CrearReservaActivity.this, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<PistaResponse> call, Throwable t) {
                 Toast.makeText(CrearReservaActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     private void cargarHorasDisponibles() {
         String fechaApi = getFechaFormatoApi();
@@ -129,13 +123,13 @@ public class CrearReservaActivity extends AppCompatActivity {
         int pistaId = pistaSeleccionada.getId();
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        apiService.getHorasDisponibles(fechaApi, pistaId).enqueue(new Callback<JsonObject>() {
+        apiService.getHorasDisponibles(fechaApi, pistaId).enqueue(new Callback<com.google.gson.JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(Call<com.google.gson.JsonObject> call, Response<com.google.gson.JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
-                        JsonObject json = response.body();
-                        JsonArray horasJson = json.getAsJsonArray("horas");
+                        com.google.gson.JsonObject json = response.body();
+                        com.google.gson.JsonArray horasJson = json.getAsJsonArray("horas");
 
                         horasDisponibles.clear();
                         for (int i = 0; i < horasJson.size(); i++) {
@@ -153,7 +147,7 @@ public class CrearReservaActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<com.google.gson.JsonObject> call, Throwable t) {
                 Toast.makeText(CrearReservaActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
@@ -173,11 +167,11 @@ public class CrearReservaActivity extends AppCompatActivity {
         ReservaRequest reservaRequest = new ReservaRequest(usuarioId, pistaSeleccionada.getId(), fechaApi, horaSeleccionada, incrementarHora(horaSeleccionada));
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        apiService.crearReserva(reservaRequest).enqueue(new Callback<JsonObject>() {
+        apiService.crearReserva(reservaRequest).enqueue(new Callback<com.google.gson.JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(Call<com.google.gson.JsonObject> call, Response<com.google.gson.JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    JsonObject json = response.body();
+                    com.google.gson.JsonObject json = response.body();
                     if (json.get("success").getAsBoolean()) {
                         Toast.makeText(CrearReservaActivity.this, "Reserva creada con éxito", Toast.LENGTH_SHORT).show();
                         finish();
@@ -188,7 +182,7 @@ public class CrearReservaActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<com.google.gson.JsonObject> call, Throwable t) {
                 Toast.makeText(CrearReservaActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
@@ -199,7 +193,7 @@ public class CrearReservaActivity extends AppCompatActivity {
         int horaInicio = Integer.parseInt(parts[0]);
         int minutoInicio = Integer.parseInt(parts[1]);
         int horaFin = (horaInicio + 1) % 24;
-        return String.format("%02d:%02d:00", horaFin, minutoInicio);
+        return String.format("%02d:%02d", horaFin, minutoInicio);
     }
 
     private String getFechaFormatoApi() {
@@ -258,5 +252,4 @@ public class CrearReservaActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 }

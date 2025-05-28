@@ -112,47 +112,35 @@ public class MainActivity extends AppCompatActivity {
 
     // Obtiene las reservas del usuario desde la API y actualiza la lista con las reservas de hoy
     private void loadProximasReservas() {
-        int usuarioId = preferenceManager.getUser().getId();
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<JsonObject> call = apiService.getReservas(usuarioId);
+        Call<List<Reserva>> call = apiService.getReservasDeHoy();
 
-        call.enqueue(new Callback<JsonObject>() {
+        call.enqueue(new Callback<List<Reserva>>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(Call<List<Reserva>> call, Response<List<Reserva>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        JsonObject json = response.body();
-                        JsonArray reservasJson = json.getAsJsonArray("reservas");
+                    List<Reserva> reservasHoy = response.body();
 
-                        Gson gson = new Gson();
-                        Type listType = new TypeToken<List<Reserva>>() {}.getType();
-                        List<Reserva> todasReservas = gson.fromJson(reservasJson, listType);
-
-                        // Filtra solo las reservas de hoy
-                        List<Reserva> reservasHoy = filtrarReservasHoy(todasReservas);
-
-                        if (reservasHoy.isEmpty()) {
-                            Toast.makeText(MainActivity.this, "No tienes reservas para hoy.", Toast.LENGTH_SHORT).show();
-                        }
-
-                        adapter.updateData(reservasHoy);
-
-                    } catch (Exception e) {
-                        Log.e("MainActivity", "Error al parsear JSON", e);
-                        Toast.makeText(MainActivity.this, "Error al procesar datos", Toast.LENGTH_SHORT).show();
+                    if (reservasHoy.isEmpty()) {
+                        Toast.makeText(MainActivity.this, "No hay reservas para hoy.", Toast.LENGTH_SHORT).show();
                     }
+
+                    adapter.updateData(reservasHoy);
+
                 } else {
                     Toast.makeText(MainActivity.this, "Error al cargar reservas", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<List<Reserva>> call, Throwable t) {
                 Log.e("MainActivity", "Error en la conexión", t);
                 Toast.makeText(MainActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
 
     // Filtra una lista de reservas para obtener solo las reservas de la fecha actual
     private List<Reserva> filtrarReservasHoy(List<Reserva> todasReservas) {

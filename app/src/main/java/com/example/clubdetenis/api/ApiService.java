@@ -4,9 +4,10 @@ import com.example.clubdetenis.DTO.DTOLogin;
 import com.example.clubdetenis.LoginResponse;
 import com.example.clubdetenis.PistaResponse;
 import com.example.clubdetenis.UsuarioResponse;
+import com.example.clubdetenis.models.Pista;
+import com.example.clubdetenis.models.Reserva;
 import com.example.clubdetenis.models.ReservaRequest;
 import com.example.clubdetenis.models.Usuario;
-
 import com.example.clubdetenis.models.UsuarioRequest;
 import com.google.gson.JsonObject;
 
@@ -17,47 +18,55 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface ApiService {
 
-    @POST("login.php")
+    // Cambié "login.php" por la ruta del controlador Spring /api/login
+    @POST("api/login")
     Call<LoginResponse> login(@Body DTOLogin loginRequest);
 
-    @GET("pista.php")
+    // Cambié "pista.php" por /api/pistas
+    @GET("api/pistas")
     Call<PistaResponse> getPistas();
 
-    @POST("reservas.php")
+    @GET("api/pistas/disponibles")
+    Call<PistaResponse> getPistasDisponibles();
+
+
+    // Cambié "reservas.php" por /api/reservas
+    @POST("api/reservas")
     Call<JsonObject> crearReserva(@Body ReservaRequest reservaRequest);
 
-    @GET("reservas.php")
-    Call<JsonObject> getReservas(@Query("usuarioId") int usuarioId); // solo sus reservas
+    @GET("api/reservas")
+    Call<List<Reserva>> getReservas(@Query("usuarioId") int usuarioId); // solo sus reservas
 
-    @GET("reservas.php")
-    Call<JsonObject> getReservasPorPerfil(
+    @GET("api/reservas/misreservas")
+    Call<List<Reserva>> getReservasPorPerfil(
             @Query("misreservas") boolean misReservas,
             @Query("usuarioId") int usuarioId,
             @Query("perfil") String perfil
     );
+    @GET("api/reservas/hoy")
+    Call<List<Reserva>> getReservasDeHoy();
 
-    @GET("pista.php")
-    Call<JsonObject> getPistasDisponibles();
 
-    @GET("reservas.php")
+
+    @GET("api/reservas/disponibles")
     Call<JsonObject> getHorasDisponibles(@Query("fecha") String fecha, @Query("pistaId") int pistaId);
 
-    @DELETE("reservas.php")
+    @DELETE("api/reservas")
     Call<Void> eliminarReserva(@Query("id") int reservaId);
 
-
     // Métodos para usuarios
-    @GET("usuarios.php") // Obtener todos los usuarios
+    @GET("api/usuarios")
     Call<List<Usuario>> getUsuarios();
 
-    @POST("usuarios.php") // Crear un nuevo usuario
+    @POST("api/usuarios")
     Call<UsuarioResponse> createUsuario(@Body UsuarioRequest usuario);
 
-    @DELETE("usuarios.php")
+    @DELETE("api/usuarios")
     Call<Void> eliminarUsuario(@Query("nombre") String nombre, @Query("email") String email);
 
 }
