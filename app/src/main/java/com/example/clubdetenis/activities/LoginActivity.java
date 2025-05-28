@@ -86,6 +86,8 @@ public class LoginActivity extends AppCompatActivity {
                         // Guarda localmente los datos del usuario para mantener sesión
 
                         // Inicia la actividad principal tras login exitoso
+                        ApiClient.email = email;
+                        ApiClient.password = password;
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish(); // Evita volver a login con botón "atrás"
                     } else {

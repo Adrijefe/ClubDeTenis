@@ -158,7 +158,7 @@ public class CrearReservaActivity extends AppCompatActivity {
         String horaSeleccionada = (String) spinnerHoras.getSelectedItem();
 
         if (pistaSeleccionada == null || horaSeleccionada == null) {
-            Toast.makeText(CrearReservaActivity.this, "Debe seleccionar una pista y una hora", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CrearReservaActivity.this, "Debes seleccionar una pista y una hora", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -176,7 +176,7 @@ public class CrearReservaActivity extends AppCompatActivity {
                         Toast.makeText(CrearReservaActivity.this, "Reserva creada con éxito", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        Toast.makeText(CrearReservaActivity.this, json.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CrearReservaActivity.this, json.get("Lo siento").getAsString(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
