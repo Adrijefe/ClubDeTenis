@@ -2,6 +2,7 @@ package com.example.clubdetenis.activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -87,6 +88,8 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
 
         // Acción al hacer clic en Añadir Usuario
         btnAñadirUsuario.setOnClickListener(v -> {
+            Toast.makeText(this, "Click detectado", Toast.LENGTH_SHORT).show();
+
             boolean valido = true;
             // Obtención de valores ingresados
             String nombre = etNombre.getText().toString().trim();
@@ -148,23 +151,43 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
     private void addUsuario(String nombre, String email, String password, String telefono, int esSocio, String perfil) {
         UsuarioRequest usuarioRequest = new UsuarioRequest(nombre, email, password, telefono, esSocio, perfil);
 
+        // Mostrar el JSON que se enviará (si deseas puedes usar Gson para convertirlo)
+        Toast.makeText(this, "Enviando usuario: " + nombre, Toast.LENGTH_SHORT).show();
+
         apiService.createUsuario(usuarioRequest).enqueue(new Callback<UsuarioResponse>() {
             @Override
             public void onResponse(Call<UsuarioResponse> call, Response<UsuarioResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(UsuariosActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    if (response.body().isSuccess()) {
+                    boolean success = response.body().isSuccess();
+                    String message = response.body().getMessage();
+
+                    Log.d("KAKA", "no funciona");
+                    if (success) {
                         loadUsuarios(); // Recargar lista si fue exitoso
+                    } else {
+                        Toast.makeText(UsuariosActivity.this, "Error desde servidor: " + message, Toast.LENGTH_LONG).show();
                     }
+                } else {
+                    // Respuesta no exitosa: error del lado del servidor
+                    String error = "Error " + response.code();
+                    try {
+                        if (response.errorBody() != null) {
+                            error += ": " + response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(UsuariosActivity.this, error, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UsuarioResponse> call, Throwable t) {
-                Toast.makeText(UsuariosActivity.this, "Error al añadir usuario", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UsuariosActivity.this, "Fallo de red: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
+
 
     // Métodos del SearchView para filtrar resultados
     @Override
