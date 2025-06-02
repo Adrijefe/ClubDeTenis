@@ -23,11 +23,11 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    // Cambié "login.php" por la ruta del controlador Spring /api/login
+
     @POST("api/login")
     Call<LoginResponse> login(@Body DTOLogin loginRequest);
 
-    // Cambié "pista.php" por /api/pistas
+
     @GET("api/pistas")
     Call<PistaResponse> getPistas();
 
@@ -35,7 +35,7 @@ public interface ApiService {
     Call<PistaResponse> getPistasDisponibles();
 
 
-    // Cambié "reservas.php" por /api/reservas
+
     @POST("api/reservas")
     Call<JsonObject> crearReserva(@Body ReservaRequest reservaRequest);
 
