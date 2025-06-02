@@ -168,6 +168,7 @@ public class CrearReservaActivity extends AppCompatActivity {
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         apiService.crearReserva(reservaRequest).enqueue(new Callback<com.google.gson.JsonObject>() {
+
             @Override
             public void onResponse(Call<com.google.gson.JsonObject> call, Response<com.google.gson.JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -176,10 +177,16 @@ public class CrearReservaActivity extends AppCompatActivity {
                         Toast.makeText(CrearReservaActivity.this, "Reserva creada con éxito", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        Toast.makeText(CrearReservaActivity.this, json.get("Lo siento").getAsString(), Toast.LENGTH_SHORT).show();
+                        // Verificar si hay mensaje de error en el JSON
+                        if (json.has("message") && !json.get("message").isJsonNull()) {
+                            Toast.makeText(CrearReservaActivity.this, json.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                        }
                     }
+                } else {
+                    Toast.makeText(CrearReservaActivity.this, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
                 }
             }
+
 
             @Override
             public void onFailure(Call<com.google.gson.JsonObject> call, Throwable t) {

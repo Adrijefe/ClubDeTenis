@@ -20,9 +20,11 @@ import com.example.clubdetenis.models.Usuario;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -90,7 +92,7 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         }
 
         holder.tvPista.setText(reserva.getPistaNombre() != null ? reserva.getPistaNombre() : "Pista desconocida");
-        holder.tvFecha.setText(fechaFormateada);  // Mostrar fecha en formato dd/MM/yyyy
+        holder.tvFecha.setText(fechaFormateada);
         holder.tvHora.setText(String.format("%s - %s",
                 reserva.getHoraInicio().substring(0, 5),
                 reserva.getHoraFin().substring(0, 5)));
@@ -100,23 +102,30 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
         holder.tvUsuarioId.setText("Nº Socio: " + reserva.getUsuarioId());
 
         PreferenceManager preferenceManager = new PreferenceManager(context);
-        Usuario usuarioActual = preferenceManager.getUser();
 
+        Usuario usuarioActual = preferenceManager.getUser();
         boolean yaPasado = false;
         try {
-            // Nos aseguramos que el formato sea EXACTAMENTE "yyyy-MM-dd HH:mm:ss"
-            String fechaHoraInicioStr = reserva.getFecha() + " " + reserva.getHoraInicio();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-            Date fechaHoraInicio = sdf.parse(fechaHoraInicioStr);
-            Date ahora = new Date();
+            String horaInicio = reserva.getHoraInicio().substring(0, 5); // Recorta a HH:mm
+            String fechaHoraInicioStr = reserva.getFecha() + " " + horaInicio;
 
-            if (fechaHoraInicio != null && !ahora.before(fechaHoraInicio)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            TimeZone timeZoneMadrid = TimeZone.getTimeZone("Europe/Madrid");
+            sdf.setTimeZone(timeZoneMadrid);
+
+            Date fechaHoraInicio = sdf.parse(fechaHoraInicioStr);
+
+            Calendar calendarMadrid = Calendar.getInstance(timeZoneMadrid);
+            Date ahora = calendarMadrid.getTime();
+
+            if (fechaHoraInicio != null && ahora.after(fechaHoraInicio)) {
                 yaPasado = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
             yaPasado = false;
         }
+
 
         // Mostrar botón solo si es administrador o propietario Y aún no ha empezado
         if (("Administrador".equals(usuarioActual.getPerfil()) || usuarioActual.getId() == reserva.getUsuarioId()) && !yaPasado) {

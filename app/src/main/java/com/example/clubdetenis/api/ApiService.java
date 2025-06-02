@@ -39,8 +39,6 @@ public interface ApiService {
     @POST("api/reservas")
     Call<JsonObject> crearReserva(@Body ReservaRequest reservaRequest);
 
-    @GET("api/reservas")
-    Call<List<Reserva>> getReservas(@Query("usuarioId") int usuarioId); // solo sus reservas
 
     @GET("api/reservas/misreservas")
     Call<List<Reserva>> getReservasPorPerfil(

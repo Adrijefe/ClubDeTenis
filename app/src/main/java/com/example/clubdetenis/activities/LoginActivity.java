@@ -85,9 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                         preferenceManager.saveUser(loggedUser);
                         // Guarda localmente los datos del usuario para mantener sesión
 
-                        // Inicia la actividad principal tras login exitoso
-                        ApiClient.email = email;
-                        ApiClient.password = password;
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish(); // Evita volver a login con botón "atrás"
                     } else {
@@ -108,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 // Se ejecuta si hay problemas de conexión o falla de la llamada
-                Log.e("LoginActivity", "Error de conexión", t);
+                Log.e("LoginActivity", "Error de conexión",t.getCause());
                 Toast.makeText(LoginActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

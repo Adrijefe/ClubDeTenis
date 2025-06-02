@@ -32,11 +32,16 @@
 
             <!-- Imagen centrada -->
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:id="@+id/mi_imagen"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
-                android:src="@drawable/imagen" />
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/imagen"
+                android:background="@drawable/circular_mask"
+                android:clipToOutline="true" />
+
 
             <!-- Botones en dos columnas -->
             <GridLayout

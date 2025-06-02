@@ -22,8 +22,8 @@ public class ApiClient {
                     .create();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl("https://demo-j2tl.onrender.com/")
-                    //.baseUrl("http://10.204.223.87:10000/")
+                    //.baseUrl("https://demo-j2tl.onrender.com/")
+                    .baseUrl("http://192.168.1.45:10000/")
                     .addConverterFactory(GsonConverterFactory.create(gson)) // Usa Gson con la configuración lenient
                     .build();
         }

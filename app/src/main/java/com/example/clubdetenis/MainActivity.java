@@ -25,10 +25,7 @@ import com.example.clubdetenis.api.ApiClient;
 import com.example.clubdetenis.api.ApiService;
 import com.example.clubdetenis.models.Reserva;
 import com.example.clubdetenis.models.Usuario;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -141,21 +138,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    // Filtra una lista de reservas para obtener solo las reservas de la fecha actual
-    private List<Reserva> filtrarReservasHoy(List<Reserva> todasReservas) {
-        List<Reserva> reservasHoy = new ArrayList<>();
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String fechaHoy = formatoFecha.format(new Date());
-
-        for (Reserva reserva : todasReservas) {
-            // Compara la fecha de la reserva con la fecha actual
-            if (reserva.getFecha().equals(fechaHoy)) {
-                reservasHoy.add(reserva);
-            }
-        }
-        return reservasHoy;
-    }
 
     // Infla el menú y muestra o oculta la opción Usuarios según el perfil del usuario que tenga
     @Override

@@ -88,7 +88,6 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
 
         // Acción al hacer clic en Añadir Usuario
         btnAñadirUsuario.setOnClickListener(v -> {
-            Toast.makeText(this, "Click detectado", Toast.LENGTH_SHORT).show();
 
             boolean valido = true;
             // Obtención de valores ingresados
@@ -151,9 +150,6 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
     private void addUsuario(String nombre, String email, String password, String telefono, int esSocio, String perfil) {
         UsuarioRequest usuarioRequest = new UsuarioRequest(nombre, email, password, telefono, esSocio, perfil);
 
-        // Mostrar el JSON que se enviará (si deseas puedes usar Gson para convertirlo)
-        Toast.makeText(this, "Enviando usuario: " + nombre, Toast.LENGTH_SHORT).show();
-
         apiService.createUsuario(usuarioRequest).enqueue(new Callback<UsuarioResponse>() {
             @Override
             public void onResponse(Call<UsuarioResponse> call, Response<UsuarioResponse> response) {
@@ -163,6 +159,7 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
 
                     Log.d("KAKA", "no funciona");
                     if (success) {
+                        Toast.makeText(UsuariosActivity.this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
                         loadUsuarios(); // Recargar lista si fue exitoso
                     } else {
                         Toast.makeText(UsuariosActivity.this, "Error desde servidor: " + message, Toast.LENGTH_LONG).show();
@@ -177,7 +174,7 @@ public class UsuariosActivity extends AppCompatActivity implements SearchView.On
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(UsuariosActivity.this, error, Toast.LENGTH_LONG).show();
+
                 }
             }
 
